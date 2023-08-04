@@ -20,6 +20,9 @@ By completing these modules, we comprehensively understood the different phases 
 
 # Collabroators
 [Zach Le](https://github.com/ezachle)
+
 [Meet Kothari](https://github.com/MeetKothari)
+
 [Krestina Beshara](https://github.com/KrestinaBeshara01842423)
+
 [Alexan Chaprazian](https://github.com/ahchaprazian)
