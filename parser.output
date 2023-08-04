@@ -1,0 +1,3197 @@
+Terminals unused in grammar
+
+    TOKEN_EOF
+    TOKEN_ERROR
+    TOKEN_AUTO
+    TOKEN_WHILE
+    TOKEN_FUNCCALL
+
+
+Grammar
+
+    0 $accept: program $end
+
+    1 program: translation_unit
+
+    2 translation_unit: external_declaration translation_unit
+    3                 | %empty
+
+    4 external_declaration: functions
+    5                     | declaration
+
+    6 functions: ident TOKEN_COLON TOKEN_FUNCTION type_specifier TOKEN_LPAREN parameter_list TOKEN_RPAREN TOKEN_ASSIGN TOKEN_LCURLY statements TOKEN_RCURLY
+    7          | ident TOKEN_COLON TOKEN_FUNCTION type_specifier TOKEN_LPAREN TOKEN_RPAREN TOKEN_ASSIGN TOKEN_LCURLY statements TOKEN_RCURLY
+    8          | ident TOKEN_COLON TOKEN_FUNCTION type_specifier TOKEN_LPAREN parameter_list TOKEN_RPAREN TOKEN_SEMICOLON
+    9          | ident TOKEN_COLON TOKEN_FUNCTION type_specifier TOKEN_LPAREN TOKEN_RPAREN TOKEN_SEMICOLON
+
+   10 declaration: ident TOKEN_COLON type_specifier TOKEN_SEMICOLON
+   11            | ident TOKEN_COLON array TOKEN_SEMICOLON
+   12            | ident TOKEN_COLON type_specifier TOKEN_ASSIGN expression TOKEN_SEMICOLON
+   13            | ident TOKEN_COLON array TOKEN_ASSIGN TOKEN_LCURLY expr_list TOKEN_RCURLY TOKEN_SEMICOLON
+
+   14 parameter_list: ident TOKEN_COLON type_specifier TOKEN_COMMA parameter_list
+   15               | ident TOKEN_COLON type_specifier
+   16               | ident TOKEN_COLON arrnosize TOKEN_COMMA parameter_list
+   17               | ident TOKEN_COLON arrnosize
+
+   18 expression: expression TOKEN_ASSIGN logical_or_expr
+   19           | logical_or_expr
+
+   20 logical_or_expr: logical_or_expr TOKEN_OR logical_and_expr
+   21                | logical_and_expr
+
+   22 logical_and_expr: logical_and_expr TOKEN_AND relational_expr
+   23                 | relational_expr
+
+   24 relational_expr: relational_expr TOKEN_LT addsub_expr
+   25                | relational_expr TOKEN_GT addsub_expr
+   26                | relational_expr TOKEN_LTE addsub_expr
+   27                | relational_expr TOKEN_GTE addsub_expr
+   28                | relational_expr TOKEN_EQUAL addsub_expr
+   29                | relational_expr TOKEN_NOTEQ addsub_expr
+   30                | addsub_expr
+
+   31 addsub_expr: addsub_expr TOKEN_PLUS mult_expr
+   32            | addsub_expr TOKEN_MINUS mult_expr
+   33            | mult_expr
+
+   34 mult_expr: mult_expr TOKEN_MULT exp_expr
+   35          | mult_expr TOKEN_DIV exp_expr
+   36          | mult_expr TOKEN_MOD exp_expr
+   37          | exp_expr
+
+   38 exp_expr: exp_expr TOKEN_EXPONENT unary_expr
+   39         | unary_expr
+
+   40 unary_expr: TOKEN_MINUS postfix_expr
+   41           | TOKEN_NOT postfix_expr
+   42           | postfix_expr
+
+   43 postfix_expr: postfix_expr TOKEN_INCREMENT
+   44             | postfix_expr TOKEN_DECREMENT
+   45             | grouping
+
+   46 grouping: ident TOKEN_LPAREN expr_list TOKEN_RPAREN
+   47         | ident TOKEN_LPAREN TOKEN_RPAREN
+   48         | TOKEN_LPAREN expr_list TOKEN_RPAREN
+   49         | TOKEN_LPAREN TOKEN_RPAREN
+   50         | TOKEN_LCURLY expr_list TOKEN_RCURLY
+   51         | ident square_brackets
+   52         | types
+
+   53 types: lit_int
+   54      | lit_char
+   55      | lit_str
+   56      | ident
+   57      | bool_true
+   58      | bool_false
+   59      | array
+
+   60 lit_int: TOKEN_LIT_INT
+
+   61 lit_str: TOKEN_LIT_STR
+
+   62 lit_char: TOKEN_LIT_CHAR
+
+   63 ident: TOKEN_IDENT
+
+   64 bool_true: TOKEN_TRUE
+
+   65 bool_false: TOKEN_FALSE
+
+   66 type_specifier: TOKEN_VOID
+   67               | TOKEN_INTEGER
+   68               | TOKEN_STRING
+   69               | TOKEN_CHAR
+   70               | TOKEN_BOOLEAN
+
+   71 array: arrsize
+   72      | arrnosize
+
+   73 arrsize: TOKEN_ARRAY TOKEN_LBRACKET lit_int TOKEN_RBRACKET type_specifier
+   74        | TOKEN_ARRAY TOKEN_LBRACKET lit_int TOKEN_RBRACKET arrsize
+
+   75 arrnosize: TOKEN_ARRAY TOKEN_LBRACKET TOKEN_RBRACKET type_specifier
+   76          | TOKEN_ARRAY TOKEN_LBRACKET TOKEN_RBRACKET arrnosize
+
+   77 square_brackets: TOKEN_LBRACKET expression TOKEN_RBRACKET square_brackets
+   78                | TOKEN_LBRACKET expression TOKEN_RBRACKET
+   79                | TOKEN_LBRACKET statements TOKEN_RBRACKET square_brackets
+   80                | TOKEN_LBRACKET statements TOKEN_RBRACKET
+
+   81 statements: open_statement statements
+   82           | closed_statement statements
+   83           | open_statement
+   84           | closed_statement
+
+   85 open_statement: TOKEN_IF TOKEN_LPAREN expression TOKEN_RPAREN open_statement
+   86               | TOKEN_IF TOKEN_LPAREN expression TOKEN_RPAREN closed_statement
+   87               | TOKEN_IF TOKEN_LPAREN expression TOKEN_RPAREN closed_statement TOKEN_ELSE open_statement
+   88               | TOKEN_FOR TOKEN_LPAREN loop_params_maybe TOKEN_SEMICOLON loop_params_maybe TOKEN_SEMICOLON loop_params_maybe TOKEN_RPAREN open_statement
+
+   89 closed_statement: TOKEN_IF TOKEN_LPAREN expression TOKEN_RPAREN closed_statement TOKEN_ELSE closed_statement
+   90                 | TOKEN_FOR TOKEN_LPAREN loop_params_maybe TOKEN_SEMICOLON loop_params_maybe TOKEN_SEMICOLON loop_params_maybe TOKEN_RPAREN closed_statement
+   91                 | other_statements
+
+   92 loop_params_maybe: %empty
+   93                  | expression
+
+   94 other_statements: TOKEN_PRINT expr_list TOKEN_SEMICOLON
+   95                 | TOKEN_PRINT TOKEN_SEMICOLON
+   96                 | TOKEN_RETURN expression TOKEN_SEMICOLON
+   97                 | TOKEN_RETURN TOKEN_SEMICOLON
+   98                 | TOKEN_LCURLY statements TOKEN_RCURLY
+   99                 | expression TOKEN_SEMICOLON
+  100                 | declaration
+
+  101 expr_list: expr_list TOKEN_COMMA expression
+  102          | expression
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    error (256)
+    TOKEN_EOF (258)
+    TOKEN_IDENT (259) 63
+    TOKEN_ERROR (260)
+    TOKEN_CHAR (261) 69
+    TOKEN_INTEGER (262) 67
+    TOKEN_STRING (263) 68
+    TOKEN_ARRAY (264) 73 74 75 76
+    TOKEN_AUTO (265)
+    TOKEN_VOID (266) 66
+    TOKEN_BOOLEAN (267) 70
+    TOKEN_FALSE (268) 65
+    TOKEN_TRUE (269) 64
+    TOKEN_IF (270) 85 86 87 89
+    TOKEN_FOR (271) 88 90
+    TOKEN_PRINT (272) 94 95
+    TOKEN_RETURN (273) 96 97
+    TOKEN_FUNCTION (274) 6 7 8 9
+    TOKEN_ELSE (275) 87 89
+    TOKEN_WHILE (276)
+    TOKEN_COLON (277) 6 7 8 9 10 11 12 13 14 15 16 17
+    TOKEN_SEMICOLON (278) 8 9 10 11 12 13 88 90 94 95 96 97 99
+    TOKEN_COMMA (279) 14 16 101
+    TOKEN_LPAREN (280) 6 7 8 9 46 47 48 49 85 86 87 88 89 90
+    TOKEN_RPAREN (281) 6 7 8 9 46 47 48 49 85 86 87 88 89 90
+    TOKEN_LCURLY (282) 6 7 13 50 98
+    TOKEN_RCURLY (283) 6 7 13 50 98
+    TOKEN_LBRACKET (284) 73 74 75 76 77 78 79 80
+    TOKEN_RBRACKET (285) 73 74 75 76 77 78 79 80
+    TOKEN_INCREMENT (286) 43
+    TOKEN_DECREMENT (287) 44
+    TOKEN_NOT (288) 41
+    TOKEN_EXPONENT (289) 38
+    TOKEN_MULT (290) 34
+    TOKEN_DIV (291) 35
+    TOKEN_MOD (292) 36
+    TOKEN_PLUS (293) 31
+    TOKEN_MINUS (294) 32 40
+    TOKEN_LT (295) 24
+    TOKEN_LTE (296) 26
+    TOKEN_GT (297) 25
+    TOKEN_GTE (298) 27
+    TOKEN_EQUAL (299) 28
+    TOKEN_NOTEQ (300) 29
+    TOKEN_AND (301) 22
+    TOKEN_OR (302) 20
+    TOKEN_ASSIGN (303) 6 7 12 13 18
+    TOKEN_FUNCCALL (304)
+    TOKEN_LIT_STR (305) 61
+    TOKEN_LIT_CHAR (306) 62
+    TOKEN_LIT_INT (307) 60
+
+
+Nonterminals, with rules where they appear
+
+    $accept (53)
+        on left: 0
+    program <decl> (54)
+        on left: 1
+        on right: 0
+    translation_unit <decl> (55)
+        on left: 2 3
+        on right: 1 2
+    external_declaration <decl> (56)
+        on left: 4 5
+        on right: 2
+    functions <decl> (57)
+        on left: 6 7 8 9
+        on right: 4
+    declaration <decl> (58)
+        on left: 10 11 12 13
+        on right: 5 100
+    parameter_list <param_list> (59)
+        on left: 14 15 16 17
+        on right: 6 8 14 16
+    expression <expr> (60)
+        on left: 18 19
+        on right: 12 18 77 78 85 86 87 89 93 96 99 101 102
+    logical_or_expr <expr> (61)
+        on left: 20 21
+        on right: 18 19 20
+    logical_and_expr <expr> (62)
+        on left: 22 23
+        on right: 20 21 22
+    relational_expr <expr> (63)
+        on left: 24 25 26 27 28 29 30
+        on right: 22 23 24 25 26 27 28 29
+    addsub_expr <expr> (64)
+        on left: 31 32 33
+        on right: 24 25 26 27 28 29 30 31 32
+    mult_expr <expr> (65)
+        on left: 34 35 36 37
+        on right: 31 32 33 34 35 36
+    exp_expr <expr> (66)
+        on left: 38 39
+        on right: 34 35 36 37 38
+    unary_expr <expr> (67)
+        on left: 40 41 42
+        on right: 38 39
+    postfix_expr <expr> (68)
+        on left: 43 44 45
+        on right: 40 41 42 43 44
+    grouping <expr> (69)
+        on left: 46 47 48 49 50 51 52
+        on right: 45
+    types <expr> (70)
+        on left: 53 54 55 56 57 58 59
+        on right: 52
+    lit_int <number> (71)
+        on left: 60
+        on right: 53 73 74
+    lit_str <word> (72)
+        on left: 61
+        on right: 55
+    lit_char <letter> (73)
+        on left: 62
+        on right: 54
+    ident <ident> (74)
+        on left: 63
+        on right: 6 7 8 9 10 11 12 13 14 15 16 17 46 47 51 56
+    bool_true <number> (75)
+        on left: 64
+        on right: 57
+    bool_false <number> (76)
+        on left: 65
+        on right: 58
+    type_specifier <type> (77)
+        on left: 66 67 68 69 70
+        on right: 6 7 8 9 10 12 14 15 73 75
+    array <type> (78)
+        on left: 71 72
+        on right: 11 13 59
+    arrsize <type> (79)
+        on left: 73 74
+        on right: 71 74
+    arrnosize <type> (80)
+        on left: 75 76
+        on right: 16 17 72 76
+    square_brackets <expr> (81)
+        on left: 77 78 79 80
+        on right: 51 77 79
+    statements <stmt> (82)
+        on left: 81 82 83 84
+        on right: 6 7 79 80 81 82 98
+    open_statement <stmt> (83)
+        on left: 85 86 87 88
+        on right: 81 83 85 87 88
+    closed_statement <stmt> (84)
+        on left: 89 90 91
+        on right: 82 84 86 87 89 90
+    loop_params_maybe <expr> (85)
+        on left: 92 93
+        on right: 88 90
+    other_statements <stmt> (86)
+        on left: 94 95 96 97 98 99 100
+        on right: 91
+    expr_list <expr> (87)
+        on left: 101 102
+        on right: 13 46 48 50 94 101
+
+
+State 0
+
+    0 $accept: . program $end
+
+    TOKEN_IDENT  shift, and go to state 1
+
+    $default  reduce using rule 3 (translation_unit)
+
+    program               go to state 2
+    translation_unit      go to state 3
+    external_declaration  go to state 4
+    functions             go to state 5
+    declaration           go to state 6
+    ident                 go to state 7
+
+
+State 1
+
+   63 ident: TOKEN_IDENT .
+
+    $default  reduce using rule 63 (ident)
+
+
+State 2
+
+    0 $accept: program . $end
+
+    $end  shift, and go to state 8
+
+
+State 3
+
+    1 program: translation_unit .
+
+    $default  reduce using rule 1 (program)
+
+
+State 4
+
+    2 translation_unit: external_declaration . translation_unit
+
+    TOKEN_IDENT  shift, and go to state 1
+
+    $default  reduce using rule 3 (translation_unit)
+
+    translation_unit      go to state 9
+    external_declaration  go to state 4
+    functions             go to state 5
+    declaration           go to state 6
+    ident                 go to state 7
+
+
+State 5
+
+    4 external_declaration: functions .
+
+    $default  reduce using rule 4 (external_declaration)
+
+
+State 6
+
+    5 external_declaration: declaration .
+
+    $default  reduce using rule 5 (external_declaration)
+
+
+State 7
+
+    6 functions: ident . TOKEN_COLON TOKEN_FUNCTION type_specifier TOKEN_LPAREN parameter_list TOKEN_RPAREN TOKEN_ASSIGN TOKEN_LCURLY statements TOKEN_RCURLY
+    7          | ident . TOKEN_COLON TOKEN_FUNCTION type_specifier TOKEN_LPAREN TOKEN_RPAREN TOKEN_ASSIGN TOKEN_LCURLY statements TOKEN_RCURLY
+    8          | ident . TOKEN_COLON TOKEN_FUNCTION type_specifier TOKEN_LPAREN parameter_list TOKEN_RPAREN TOKEN_SEMICOLON
+    9          | ident . TOKEN_COLON TOKEN_FUNCTION type_specifier TOKEN_LPAREN TOKEN_RPAREN TOKEN_SEMICOLON
+   10 declaration: ident . TOKEN_COLON type_specifier TOKEN_SEMICOLON
+   11            | ident . TOKEN_COLON array TOKEN_SEMICOLON
+   12            | ident . TOKEN_COLON type_specifier TOKEN_ASSIGN expression TOKEN_SEMICOLON
+   13            | ident . TOKEN_COLON array TOKEN_ASSIGN TOKEN_LCURLY expr_list TOKEN_RCURLY TOKEN_SEMICOLON
+
+    TOKEN_COLON  shift, and go to state 10
+
+
+State 8
+
+    0 $accept: program $end .
+
+    $default  accept
+
+
+State 9
+
+    2 translation_unit: external_declaration translation_unit .
+
+    $default  reduce using rule 2 (translation_unit)
+
+
+State 10
+
+    6 functions: ident TOKEN_COLON . TOKEN_FUNCTION type_specifier TOKEN_LPAREN parameter_list TOKEN_RPAREN TOKEN_ASSIGN TOKEN_LCURLY statements TOKEN_RCURLY
+    7          | ident TOKEN_COLON . TOKEN_FUNCTION type_specifier TOKEN_LPAREN TOKEN_RPAREN TOKEN_ASSIGN TOKEN_LCURLY statements TOKEN_RCURLY
+    8          | ident TOKEN_COLON . TOKEN_FUNCTION type_specifier TOKEN_LPAREN parameter_list TOKEN_RPAREN TOKEN_SEMICOLON
+    9          | ident TOKEN_COLON . TOKEN_FUNCTION type_specifier TOKEN_LPAREN TOKEN_RPAREN TOKEN_SEMICOLON
+   10 declaration: ident TOKEN_COLON . type_specifier TOKEN_SEMICOLON
+   11            | ident TOKEN_COLON . array TOKEN_SEMICOLON
+   12            | ident TOKEN_COLON . type_specifier TOKEN_ASSIGN expression TOKEN_SEMICOLON
+   13            | ident TOKEN_COLON . array TOKEN_ASSIGN TOKEN_LCURLY expr_list TOKEN_RCURLY TOKEN_SEMICOLON
+
+    TOKEN_CHAR      shift, and go to state 11
+    TOKEN_INTEGER   shift, and go to state 12
+    TOKEN_STRING    shift, and go to state 13
+    TOKEN_ARRAY     shift, and go to state 14
+    TOKEN_VOID      shift, and go to state 15
+    TOKEN_BOOLEAN   shift, and go to state 16
+    TOKEN_FUNCTION  shift, and go to state 17
+
+    type_specifier  go to state 18
+    array           go to state 19
+    arrsize         go to state 20
+    arrnosize       go to state 21
+
+
+State 11
+
+   69 type_specifier: TOKEN_CHAR .
+
+    $default  reduce using rule 69 (type_specifier)
+
+
+State 12
+
+   67 type_specifier: TOKEN_INTEGER .
+
+    $default  reduce using rule 67 (type_specifier)
+
+
+State 13
+
+   68 type_specifier: TOKEN_STRING .
+
+    $default  reduce using rule 68 (type_specifier)
+
+
+State 14
+
+   73 arrsize: TOKEN_ARRAY . TOKEN_LBRACKET lit_int TOKEN_RBRACKET type_specifier
+   74        | TOKEN_ARRAY . TOKEN_LBRACKET lit_int TOKEN_RBRACKET arrsize
+   75 arrnosize: TOKEN_ARRAY . TOKEN_LBRACKET TOKEN_RBRACKET type_specifier
+   76          | TOKEN_ARRAY . TOKEN_LBRACKET TOKEN_RBRACKET arrnosize
+
+    TOKEN_LBRACKET  shift, and go to state 22
+
+
+State 15
+
+   66 type_specifier: TOKEN_VOID .
+
+    $default  reduce using rule 66 (type_specifier)
+
+
+State 16
+
+   70 type_specifier: TOKEN_BOOLEAN .
+
+    $default  reduce using rule 70 (type_specifier)
+
+
+State 17
+
+    6 functions: ident TOKEN_COLON TOKEN_FUNCTION . type_specifier TOKEN_LPAREN parameter_list TOKEN_RPAREN TOKEN_ASSIGN TOKEN_LCURLY statements TOKEN_RCURLY
+    7          | ident TOKEN_COLON TOKEN_FUNCTION . type_specifier TOKEN_LPAREN TOKEN_RPAREN TOKEN_ASSIGN TOKEN_LCURLY statements TOKEN_RCURLY
+    8          | ident TOKEN_COLON TOKEN_FUNCTION . type_specifier TOKEN_LPAREN parameter_list TOKEN_RPAREN TOKEN_SEMICOLON
+    9          | ident TOKEN_COLON TOKEN_FUNCTION . type_specifier TOKEN_LPAREN TOKEN_RPAREN TOKEN_SEMICOLON
+
+    TOKEN_CHAR     shift, and go to state 11
+    TOKEN_INTEGER  shift, and go to state 12
+    TOKEN_STRING   shift, and go to state 13
+    TOKEN_VOID     shift, and go to state 15
+    TOKEN_BOOLEAN  shift, and go to state 16
+
+    type_specifier  go to state 23
+
+
+State 18
+
+   10 declaration: ident TOKEN_COLON type_specifier . TOKEN_SEMICOLON
+   12            | ident TOKEN_COLON type_specifier . TOKEN_ASSIGN expression TOKEN_SEMICOLON
+
+    TOKEN_SEMICOLON  shift, and go to state 24
+    TOKEN_ASSIGN     shift, and go to state 25
+
+
+State 19
+
+   11 declaration: ident TOKEN_COLON array . TOKEN_SEMICOLON
+   13            | ident TOKEN_COLON array . TOKEN_ASSIGN TOKEN_LCURLY expr_list TOKEN_RCURLY TOKEN_SEMICOLON
+
+    TOKEN_SEMICOLON  shift, and go to state 26
+    TOKEN_ASSIGN     shift, and go to state 27
+
+
+State 20
+
+   71 array: arrsize .
+
+    $default  reduce using rule 71 (array)
+
+
+State 21
+
+   72 array: arrnosize .
+
+    $default  reduce using rule 72 (array)
+
+
+State 22
+
+   73 arrsize: TOKEN_ARRAY TOKEN_LBRACKET . lit_int TOKEN_RBRACKET type_specifier
+   74        | TOKEN_ARRAY TOKEN_LBRACKET . lit_int TOKEN_RBRACKET arrsize
+   75 arrnosize: TOKEN_ARRAY TOKEN_LBRACKET . TOKEN_RBRACKET type_specifier
+   76          | TOKEN_ARRAY TOKEN_LBRACKET . TOKEN_RBRACKET arrnosize
+
+    TOKEN_RBRACKET  shift, and go to state 28
+    TOKEN_LIT_INT   shift, and go to state 29
+
+    lit_int  go to state 30
+
+
+State 23
+
+    6 functions: ident TOKEN_COLON TOKEN_FUNCTION type_specifier . TOKEN_LPAREN parameter_list TOKEN_RPAREN TOKEN_ASSIGN TOKEN_LCURLY statements TOKEN_RCURLY
+    7          | ident TOKEN_COLON TOKEN_FUNCTION type_specifier . TOKEN_LPAREN TOKEN_RPAREN TOKEN_ASSIGN TOKEN_LCURLY statements TOKEN_RCURLY
+    8          | ident TOKEN_COLON TOKEN_FUNCTION type_specifier . TOKEN_LPAREN parameter_list TOKEN_RPAREN TOKEN_SEMICOLON
+    9          | ident TOKEN_COLON TOKEN_FUNCTION type_specifier . TOKEN_LPAREN TOKEN_RPAREN TOKEN_SEMICOLON
+
+    TOKEN_LPAREN  shift, and go to state 31
+
+
+State 24
+
+   10 declaration: ident TOKEN_COLON type_specifier TOKEN_SEMICOLON .
+
+    $default  reduce using rule 10 (declaration)
+
+
+State 25
+
+   12 declaration: ident TOKEN_COLON type_specifier TOKEN_ASSIGN . expression TOKEN_SEMICOLON
+
+    TOKEN_IDENT     shift, and go to state 1
+    TOKEN_ARRAY     shift, and go to state 14
+    TOKEN_FALSE     shift, and go to state 32
+    TOKEN_TRUE      shift, and go to state 33
+    TOKEN_LPAREN    shift, and go to state 34
+    TOKEN_LCURLY    shift, and go to state 35
+    TOKEN_NOT       shift, and go to state 36
+    TOKEN_MINUS     shift, and go to state 37
+    TOKEN_LIT_STR   shift, and go to state 38
+    TOKEN_LIT_CHAR  shift, and go to state 39
+    TOKEN_LIT_INT   shift, and go to state 29
+
+    expression        go to state 40
+    logical_or_expr   go to state 41
+    logical_and_expr  go to state 42
+    relational_expr   go to state 43
+    addsub_expr       go to state 44
+    mult_expr         go to state 45
+    exp_expr          go to state 46
+    unary_expr        go to state 47
+    postfix_expr      go to state 48
+    grouping          go to state 49
+    types             go to state 50
+    lit_int           go to state 51
+    lit_str           go to state 52
+    lit_char          go to state 53
+    ident             go to state 54
+    bool_true         go to state 55
+    bool_false        go to state 56
+    array             go to state 57
+    arrsize           go to state 20
+    arrnosize         go to state 21
+
+
+State 26
+
+   11 declaration: ident TOKEN_COLON array TOKEN_SEMICOLON .
+
+    $default  reduce using rule 11 (declaration)
+
+
+State 27
+
+   13 declaration: ident TOKEN_COLON array TOKEN_ASSIGN . TOKEN_LCURLY expr_list TOKEN_RCURLY TOKEN_SEMICOLON
+
+    TOKEN_LCURLY  shift, and go to state 58
+
+
+State 28
+
+   75 arrnosize: TOKEN_ARRAY TOKEN_LBRACKET TOKEN_RBRACKET . type_specifier
+   76          | TOKEN_ARRAY TOKEN_LBRACKET TOKEN_RBRACKET . arrnosize
+
+    TOKEN_CHAR     shift, and go to state 11
+    TOKEN_INTEGER  shift, and go to state 12
+    TOKEN_STRING   shift, and go to state 13
+    TOKEN_ARRAY    shift, and go to state 59
+    TOKEN_VOID     shift, and go to state 15
+    TOKEN_BOOLEAN  shift, and go to state 16
+
+    type_specifier  go to state 60
+    arrnosize       go to state 61
+
+
+State 29
+
+   60 lit_int: TOKEN_LIT_INT .
+
+    $default  reduce using rule 60 (lit_int)
+
+
+State 30
+
+   73 arrsize: TOKEN_ARRAY TOKEN_LBRACKET lit_int . TOKEN_RBRACKET type_specifier
+   74        | TOKEN_ARRAY TOKEN_LBRACKET lit_int . TOKEN_RBRACKET arrsize
+
+    TOKEN_RBRACKET  shift, and go to state 62
+
+
+State 31
+
+    6 functions: ident TOKEN_COLON TOKEN_FUNCTION type_specifier TOKEN_LPAREN . parameter_list TOKEN_RPAREN TOKEN_ASSIGN TOKEN_LCURLY statements TOKEN_RCURLY
+    7          | ident TOKEN_COLON TOKEN_FUNCTION type_specifier TOKEN_LPAREN . TOKEN_RPAREN TOKEN_ASSIGN TOKEN_LCURLY statements TOKEN_RCURLY
+    8          | ident TOKEN_COLON TOKEN_FUNCTION type_specifier TOKEN_LPAREN . parameter_list TOKEN_RPAREN TOKEN_SEMICOLON
+    9          | ident TOKEN_COLON TOKEN_FUNCTION type_specifier TOKEN_LPAREN . TOKEN_RPAREN TOKEN_SEMICOLON
+
+    TOKEN_IDENT   shift, and go to state 1
+    TOKEN_RPAREN  shift, and go to state 63
+
+    parameter_list  go to state 64
+    ident           go to state 65
+
+
+State 32
+
+   65 bool_false: TOKEN_FALSE .
+
+    $default  reduce using rule 65 (bool_false)
+
+
+State 33
+
+   64 bool_true: TOKEN_TRUE .
+
+    $default  reduce using rule 64 (bool_true)
+
+
+State 34
+
+   48 grouping: TOKEN_LPAREN . expr_list TOKEN_RPAREN
+   49         | TOKEN_LPAREN . TOKEN_RPAREN
+
+    TOKEN_IDENT     shift, and go to state 1
+    TOKEN_ARRAY     shift, and go to state 14
+    TOKEN_FALSE     shift, and go to state 32
+    TOKEN_TRUE      shift, and go to state 33
+    TOKEN_LPAREN    shift, and go to state 34
+    TOKEN_RPAREN    shift, and go to state 66
+    TOKEN_LCURLY    shift, and go to state 35
+    TOKEN_NOT       shift, and go to state 36
+    TOKEN_MINUS     shift, and go to state 37
+    TOKEN_LIT_STR   shift, and go to state 38
+    TOKEN_LIT_CHAR  shift, and go to state 39
+    TOKEN_LIT_INT   shift, and go to state 29
+
+    expression        go to state 67
+    logical_or_expr   go to state 41
+    logical_and_expr  go to state 42
+    relational_expr   go to state 43
+    addsub_expr       go to state 44
+    mult_expr         go to state 45
+    exp_expr          go to state 46
+    unary_expr        go to state 47
+    postfix_expr      go to state 48
+    grouping          go to state 49
+    types             go to state 50
+    lit_int           go to state 51
+    lit_str           go to state 52
+    lit_char          go to state 53
+    ident             go to state 54
+    bool_true         go to state 55
+    bool_false        go to state 56
+    array             go to state 57
+    arrsize           go to state 20
+    arrnosize         go to state 21
+    expr_list         go to state 68
+
+
+State 35
+
+   50 grouping: TOKEN_LCURLY . expr_list TOKEN_RCURLY
+
+    TOKEN_IDENT     shift, and go to state 1
+    TOKEN_ARRAY     shift, and go to state 14
+    TOKEN_FALSE     shift, and go to state 32
+    TOKEN_TRUE      shift, and go to state 33
+    TOKEN_LPAREN    shift, and go to state 34
+    TOKEN_LCURLY    shift, and go to state 35
+    TOKEN_NOT       shift, and go to state 36
+    TOKEN_MINUS     shift, and go to state 37
+    TOKEN_LIT_STR   shift, and go to state 38
+    TOKEN_LIT_CHAR  shift, and go to state 39
+    TOKEN_LIT_INT   shift, and go to state 29
+
+    expression        go to state 67
+    logical_or_expr   go to state 41
+    logical_and_expr  go to state 42
+    relational_expr   go to state 43
+    addsub_expr       go to state 44
+    mult_expr         go to state 45
+    exp_expr          go to state 46
+    unary_expr        go to state 47
+    postfix_expr      go to state 48
+    grouping          go to state 49
+    types             go to state 50
+    lit_int           go to state 51
+    lit_str           go to state 52
+    lit_char          go to state 53
+    ident             go to state 54
+    bool_true         go to state 55
+    bool_false        go to state 56
+    array             go to state 57
+    arrsize           go to state 20
+    arrnosize         go to state 21
+    expr_list         go to state 69
+
+
+State 36
+
+   41 unary_expr: TOKEN_NOT . postfix_expr
+
+    TOKEN_IDENT     shift, and go to state 1
+    TOKEN_ARRAY     shift, and go to state 14
+    TOKEN_FALSE     shift, and go to state 32
+    TOKEN_TRUE      shift, and go to state 33
+    TOKEN_LPAREN    shift, and go to state 34
+    TOKEN_LCURLY    shift, and go to state 35
+    TOKEN_LIT_STR   shift, and go to state 38
+    TOKEN_LIT_CHAR  shift, and go to state 39
+    TOKEN_LIT_INT   shift, and go to state 29
+
+    postfix_expr  go to state 70
+    grouping      go to state 49
+    types         go to state 50
+    lit_int       go to state 51
+    lit_str       go to state 52
+    lit_char      go to state 53
+    ident         go to state 54
+    bool_true     go to state 55
+    bool_false    go to state 56
+    array         go to state 57
+    arrsize       go to state 20
+    arrnosize     go to state 21
+
+
+State 37
+
+   40 unary_expr: TOKEN_MINUS . postfix_expr
+
+    TOKEN_IDENT     shift, and go to state 1
+    TOKEN_ARRAY     shift, and go to state 14
+    TOKEN_FALSE     shift, and go to state 32
+    TOKEN_TRUE      shift, and go to state 33
+    TOKEN_LPAREN    shift, and go to state 34
+    TOKEN_LCURLY    shift, and go to state 35
+    TOKEN_LIT_STR   shift, and go to state 38
+    TOKEN_LIT_CHAR  shift, and go to state 39
+    TOKEN_LIT_INT   shift, and go to state 29
+
+    postfix_expr  go to state 71
+    grouping      go to state 49
+    types         go to state 50
+    lit_int       go to state 51
+    lit_str       go to state 52
+    lit_char      go to state 53
+    ident         go to state 54
+    bool_true     go to state 55
+    bool_false    go to state 56
+    array         go to state 57
+    arrsize       go to state 20
+    arrnosize     go to state 21
+
+
+State 38
+
+   61 lit_str: TOKEN_LIT_STR .
+
+    $default  reduce using rule 61 (lit_str)
+
+
+State 39
+
+   62 lit_char: TOKEN_LIT_CHAR .
+
+    $default  reduce using rule 62 (lit_char)
+
+
+State 40
+
+   12 declaration: ident TOKEN_COLON type_specifier TOKEN_ASSIGN expression . TOKEN_SEMICOLON
+   18 expression: expression . TOKEN_ASSIGN logical_or_expr
+
+    TOKEN_SEMICOLON  shift, and go to state 72
+    TOKEN_ASSIGN     shift, and go to state 73
+
+
+State 41
+
+   19 expression: logical_or_expr .
+   20 logical_or_expr: logical_or_expr . TOKEN_OR logical_and_expr
+
+    TOKEN_OR  shift, and go to state 74
+
+    $default  reduce using rule 19 (expression)
+
+
+State 42
+
+   21 logical_or_expr: logical_and_expr .
+   22 logical_and_expr: logical_and_expr . TOKEN_AND relational_expr
+
+    TOKEN_AND  shift, and go to state 75
+
+    $default  reduce using rule 21 (logical_or_expr)
+
+
+State 43
+
+   23 logical_and_expr: relational_expr .
+   24 relational_expr: relational_expr . TOKEN_LT addsub_expr
+   25                | relational_expr . TOKEN_GT addsub_expr
+   26                | relational_expr . TOKEN_LTE addsub_expr
+   27                | relational_expr . TOKEN_GTE addsub_expr
+   28                | relational_expr . TOKEN_EQUAL addsub_expr
+   29                | relational_expr . TOKEN_NOTEQ addsub_expr
+
+    TOKEN_LT     shift, and go to state 76
+    TOKEN_LTE    shift, and go to state 77
+    TOKEN_GT     shift, and go to state 78
+    TOKEN_GTE    shift, and go to state 79
+    TOKEN_EQUAL  shift, and go to state 80
+    TOKEN_NOTEQ  shift, and go to state 81
+
+    $default  reduce using rule 23 (logical_and_expr)
+
+
+State 44
+
+   30 relational_expr: addsub_expr .
+   31 addsub_expr: addsub_expr . TOKEN_PLUS mult_expr
+   32            | addsub_expr . TOKEN_MINUS mult_expr
+
+    TOKEN_PLUS   shift, and go to state 82
+    TOKEN_MINUS  shift, and go to state 83
+
+    $default  reduce using rule 30 (relational_expr)
+
+
+State 45
+
+   33 addsub_expr: mult_expr .
+   34 mult_expr: mult_expr . TOKEN_MULT exp_expr
+   35          | mult_expr . TOKEN_DIV exp_expr
+   36          | mult_expr . TOKEN_MOD exp_expr
+
+    TOKEN_MULT  shift, and go to state 84
+    TOKEN_DIV   shift, and go to state 85
+    TOKEN_MOD   shift, and go to state 86
+
+    $default  reduce using rule 33 (addsub_expr)
+
+
+State 46
+
+   37 mult_expr: exp_expr .
+   38 exp_expr: exp_expr . TOKEN_EXPONENT unary_expr
+
+    TOKEN_EXPONENT  shift, and go to state 87
+
+    $default  reduce using rule 37 (mult_expr)
+
+
+State 47
+
+   39 exp_expr: unary_expr .
+
+    $default  reduce using rule 39 (exp_expr)
+
+
+State 48
+
+   42 unary_expr: postfix_expr .
+   43 postfix_expr: postfix_expr . TOKEN_INCREMENT
+   44             | postfix_expr . TOKEN_DECREMENT
+
+    TOKEN_INCREMENT  shift, and go to state 88
+    TOKEN_DECREMENT  shift, and go to state 89
+
+    $default  reduce using rule 42 (unary_expr)
+
+
+State 49
+
+   45 postfix_expr: grouping .
+
+    $default  reduce using rule 45 (postfix_expr)
+
+
+State 50
+
+   52 grouping: types .
+
+    $default  reduce using rule 52 (grouping)
+
+
+State 51
+
+   53 types: lit_int .
+
+    $default  reduce using rule 53 (types)
+
+
+State 52
+
+   55 types: lit_str .
+
+    $default  reduce using rule 55 (types)
+
+
+State 53
+
+   54 types: lit_char .
+
+    $default  reduce using rule 54 (types)
+
+
+State 54
+
+   46 grouping: ident . TOKEN_LPAREN expr_list TOKEN_RPAREN
+   47         | ident . TOKEN_LPAREN TOKEN_RPAREN
+   51         | ident . square_brackets
+   56 types: ident .
+
+    TOKEN_LPAREN    shift, and go to state 90
+    TOKEN_LBRACKET  shift, and go to state 91
+
+    $default  reduce using rule 56 (types)
+
+    square_brackets  go to state 92
+
+
+State 55
+
+   57 types: bool_true .
+
+    $default  reduce using rule 57 (types)
+
+
+State 56
+
+   58 types: bool_false .
+
+    $default  reduce using rule 58 (types)
+
+
+State 57
+
+   59 types: array .
+
+    $default  reduce using rule 59 (types)
+
+
+State 58
+
+   13 declaration: ident TOKEN_COLON array TOKEN_ASSIGN TOKEN_LCURLY . expr_list TOKEN_RCURLY TOKEN_SEMICOLON
+
+    TOKEN_IDENT     shift, and go to state 1
+    TOKEN_ARRAY     shift, and go to state 14
+    TOKEN_FALSE     shift, and go to state 32
+    TOKEN_TRUE      shift, and go to state 33
+    TOKEN_LPAREN    shift, and go to state 34
+    TOKEN_LCURLY    shift, and go to state 35
+    TOKEN_NOT       shift, and go to state 36
+    TOKEN_MINUS     shift, and go to state 37
+    TOKEN_LIT_STR   shift, and go to state 38
+    TOKEN_LIT_CHAR  shift, and go to state 39
+    TOKEN_LIT_INT   shift, and go to state 29
+
+    expression        go to state 67
+    logical_or_expr   go to state 41
+    logical_and_expr  go to state 42
+    relational_expr   go to state 43
+    addsub_expr       go to state 44
+    mult_expr         go to state 45
+    exp_expr          go to state 46
+    unary_expr        go to state 47
+    postfix_expr      go to state 48
+    grouping          go to state 49
+    types             go to state 50
+    lit_int           go to state 51
+    lit_str           go to state 52
+    lit_char          go to state 53
+    ident             go to state 54
+    bool_true         go to state 55
+    bool_false        go to state 56
+    array             go to state 57
+    arrsize           go to state 20
+    arrnosize         go to state 21
+    expr_list         go to state 93
+
+
+State 59
+
+   75 arrnosize: TOKEN_ARRAY . TOKEN_LBRACKET TOKEN_RBRACKET type_specifier
+   76          | TOKEN_ARRAY . TOKEN_LBRACKET TOKEN_RBRACKET arrnosize
+
+    TOKEN_LBRACKET  shift, and go to state 94
+
+
+State 60
+
+   75 arrnosize: TOKEN_ARRAY TOKEN_LBRACKET TOKEN_RBRACKET type_specifier .
+
+    $default  reduce using rule 75 (arrnosize)
+
+
+State 61
+
+   76 arrnosize: TOKEN_ARRAY TOKEN_LBRACKET TOKEN_RBRACKET arrnosize .
+
+    $default  reduce using rule 76 (arrnosize)
+
+
+State 62
+
+   73 arrsize: TOKEN_ARRAY TOKEN_LBRACKET lit_int TOKEN_RBRACKET . type_specifier
+   74        | TOKEN_ARRAY TOKEN_LBRACKET lit_int TOKEN_RBRACKET . arrsize
+
+    TOKEN_CHAR     shift, and go to state 11
+    TOKEN_INTEGER  shift, and go to state 12
+    TOKEN_STRING   shift, and go to state 13
+    TOKEN_ARRAY    shift, and go to state 95
+    TOKEN_VOID     shift, and go to state 15
+    TOKEN_BOOLEAN  shift, and go to state 16
+
+    type_specifier  go to state 96
+    arrsize         go to state 97
+
+
+State 63
+
+    7 functions: ident TOKEN_COLON TOKEN_FUNCTION type_specifier TOKEN_LPAREN TOKEN_RPAREN . TOKEN_ASSIGN TOKEN_LCURLY statements TOKEN_RCURLY
+    9          | ident TOKEN_COLON TOKEN_FUNCTION type_specifier TOKEN_LPAREN TOKEN_RPAREN . TOKEN_SEMICOLON
+
+    TOKEN_SEMICOLON  shift, and go to state 98
+    TOKEN_ASSIGN     shift, and go to state 99
+
+
+State 64
+
+    6 functions: ident TOKEN_COLON TOKEN_FUNCTION type_specifier TOKEN_LPAREN parameter_list . TOKEN_RPAREN TOKEN_ASSIGN TOKEN_LCURLY statements TOKEN_RCURLY
+    8          | ident TOKEN_COLON TOKEN_FUNCTION type_specifier TOKEN_LPAREN parameter_list . TOKEN_RPAREN TOKEN_SEMICOLON
+
+    TOKEN_RPAREN  shift, and go to state 100
+
+
+State 65
+
+   14 parameter_list: ident . TOKEN_COLON type_specifier TOKEN_COMMA parameter_list
+   15               | ident . TOKEN_COLON type_specifier
+   16               | ident . TOKEN_COLON arrnosize TOKEN_COMMA parameter_list
+   17               | ident . TOKEN_COLON arrnosize
+
+    TOKEN_COLON  shift, and go to state 101
+
+
+State 66
+
+   49 grouping: TOKEN_LPAREN TOKEN_RPAREN .
+
+    $default  reduce using rule 49 (grouping)
+
+
+State 67
+
+   18 expression: expression . TOKEN_ASSIGN logical_or_expr
+  102 expr_list: expression .
+
+    TOKEN_ASSIGN  shift, and go to state 73
+
+    $default  reduce using rule 102 (expr_list)
+
+
+State 68
+
+   48 grouping: TOKEN_LPAREN expr_list . TOKEN_RPAREN
+  101 expr_list: expr_list . TOKEN_COMMA expression
+
+    TOKEN_COMMA   shift, and go to state 102
+    TOKEN_RPAREN  shift, and go to state 103
+
+
+State 69
+
+   50 grouping: TOKEN_LCURLY expr_list . TOKEN_RCURLY
+  101 expr_list: expr_list . TOKEN_COMMA expression
+
+    TOKEN_COMMA   shift, and go to state 102
+    TOKEN_RCURLY  shift, and go to state 104
+
+
+State 70
+
+   41 unary_expr: TOKEN_NOT postfix_expr .
+   43 postfix_expr: postfix_expr . TOKEN_INCREMENT
+   44             | postfix_expr . TOKEN_DECREMENT
+
+    TOKEN_INCREMENT  shift, and go to state 88
+    TOKEN_DECREMENT  shift, and go to state 89
+
+    $default  reduce using rule 41 (unary_expr)
+
+
+State 71
+
+   40 unary_expr: TOKEN_MINUS postfix_expr .
+   43 postfix_expr: postfix_expr . TOKEN_INCREMENT
+   44             | postfix_expr . TOKEN_DECREMENT
+
+    TOKEN_INCREMENT  shift, and go to state 88
+    TOKEN_DECREMENT  shift, and go to state 89
+
+    $default  reduce using rule 40 (unary_expr)
+
+
+State 72
+
+   12 declaration: ident TOKEN_COLON type_specifier TOKEN_ASSIGN expression TOKEN_SEMICOLON .
+
+    $default  reduce using rule 12 (declaration)
+
+
+State 73
+
+   18 expression: expression TOKEN_ASSIGN . logical_or_expr
+
+    TOKEN_IDENT     shift, and go to state 1
+    TOKEN_ARRAY     shift, and go to state 14
+    TOKEN_FALSE     shift, and go to state 32
+    TOKEN_TRUE      shift, and go to state 33
+    TOKEN_LPAREN    shift, and go to state 34
+    TOKEN_LCURLY    shift, and go to state 35
+    TOKEN_NOT       shift, and go to state 36
+    TOKEN_MINUS     shift, and go to state 37
+    TOKEN_LIT_STR   shift, and go to state 38
+    TOKEN_LIT_CHAR  shift, and go to state 39
+    TOKEN_LIT_INT   shift, and go to state 29
+
+    logical_or_expr   go to state 105
+    logical_and_expr  go to state 42
+    relational_expr   go to state 43
+    addsub_expr       go to state 44
+    mult_expr         go to state 45
+    exp_expr          go to state 46
+    unary_expr        go to state 47
+    postfix_expr      go to state 48
+    grouping          go to state 49
+    types             go to state 50
+    lit_int           go to state 51
+    lit_str           go to state 52
+    lit_char          go to state 53
+    ident             go to state 54
+    bool_true         go to state 55
+    bool_false        go to state 56
+    array             go to state 57
+    arrsize           go to state 20
+    arrnosize         go to state 21
+
+
+State 74
+
+   20 logical_or_expr: logical_or_expr TOKEN_OR . logical_and_expr
+
+    TOKEN_IDENT     shift, and go to state 1
+    TOKEN_ARRAY     shift, and go to state 14
+    TOKEN_FALSE     shift, and go to state 32
+    TOKEN_TRUE      shift, and go to state 33
+    TOKEN_LPAREN    shift, and go to state 34
+    TOKEN_LCURLY    shift, and go to state 35
+    TOKEN_NOT       shift, and go to state 36
+    TOKEN_MINUS     shift, and go to state 37
+    TOKEN_LIT_STR   shift, and go to state 38
+    TOKEN_LIT_CHAR  shift, and go to state 39
+    TOKEN_LIT_INT   shift, and go to state 29
+
+    logical_and_expr  go to state 106
+    relational_expr   go to state 43
+    addsub_expr       go to state 44
+    mult_expr         go to state 45
+    exp_expr          go to state 46
+    unary_expr        go to state 47
+    postfix_expr      go to state 48
+    grouping          go to state 49
+    types             go to state 50
+    lit_int           go to state 51
+    lit_str           go to state 52
+    lit_char          go to state 53
+    ident             go to state 54
+    bool_true         go to state 55
+    bool_false        go to state 56
+    array             go to state 57
+    arrsize           go to state 20
+    arrnosize         go to state 21
+
+
+State 75
+
+   22 logical_and_expr: logical_and_expr TOKEN_AND . relational_expr
+
+    TOKEN_IDENT     shift, and go to state 1
+    TOKEN_ARRAY     shift, and go to state 14
+    TOKEN_FALSE     shift, and go to state 32
+    TOKEN_TRUE      shift, and go to state 33
+    TOKEN_LPAREN    shift, and go to state 34
+    TOKEN_LCURLY    shift, and go to state 35
+    TOKEN_NOT       shift, and go to state 36
+    TOKEN_MINUS     shift, and go to state 37
+    TOKEN_LIT_STR   shift, and go to state 38
+    TOKEN_LIT_CHAR  shift, and go to state 39
+    TOKEN_LIT_INT   shift, and go to state 29
+
+    relational_expr  go to state 107
+    addsub_expr      go to state 44
+    mult_expr        go to state 45
+    exp_expr         go to state 46
+    unary_expr       go to state 47
+    postfix_expr     go to state 48
+    grouping         go to state 49
+    types            go to state 50
+    lit_int          go to state 51
+    lit_str          go to state 52
+    lit_char         go to state 53
+    ident            go to state 54
+    bool_true        go to state 55
+    bool_false       go to state 56
+    array            go to state 57
+    arrsize          go to state 20
+    arrnosize        go to state 21
+
+
+State 76
+
+   24 relational_expr: relational_expr TOKEN_LT . addsub_expr
+
+    TOKEN_IDENT     shift, and go to state 1
+    TOKEN_ARRAY     shift, and go to state 14
+    TOKEN_FALSE     shift, and go to state 32
+    TOKEN_TRUE      shift, and go to state 33
+    TOKEN_LPAREN    shift, and go to state 34
+    TOKEN_LCURLY    shift, and go to state 35
+    TOKEN_NOT       shift, and go to state 36
+    TOKEN_MINUS     shift, and go to state 37
+    TOKEN_LIT_STR   shift, and go to state 38
+    TOKEN_LIT_CHAR  shift, and go to state 39
+    TOKEN_LIT_INT   shift, and go to state 29
+
+    addsub_expr   go to state 108
+    mult_expr     go to state 45
+    exp_expr      go to state 46
+    unary_expr    go to state 47
+    postfix_expr  go to state 48
+    grouping      go to state 49
+    types         go to state 50
+    lit_int       go to state 51
+    lit_str       go to state 52
+    lit_char      go to state 53
+    ident         go to state 54
+    bool_true     go to state 55
+    bool_false    go to state 56
+    array         go to state 57
+    arrsize       go to state 20
+    arrnosize     go to state 21
+
+
+State 77
+
+   26 relational_expr: relational_expr TOKEN_LTE . addsub_expr
+
+    TOKEN_IDENT     shift, and go to state 1
+    TOKEN_ARRAY     shift, and go to state 14
+    TOKEN_FALSE     shift, and go to state 32
+    TOKEN_TRUE      shift, and go to state 33
+    TOKEN_LPAREN    shift, and go to state 34
+    TOKEN_LCURLY    shift, and go to state 35
+    TOKEN_NOT       shift, and go to state 36
+    TOKEN_MINUS     shift, and go to state 37
+    TOKEN_LIT_STR   shift, and go to state 38
+    TOKEN_LIT_CHAR  shift, and go to state 39
+    TOKEN_LIT_INT   shift, and go to state 29
+
+    addsub_expr   go to state 109
+    mult_expr     go to state 45
+    exp_expr      go to state 46
+    unary_expr    go to state 47
+    postfix_expr  go to state 48
+    grouping      go to state 49
+    types         go to state 50
+    lit_int       go to state 51
+    lit_str       go to state 52
+    lit_char      go to state 53
+    ident         go to state 54
+    bool_true     go to state 55
+    bool_false    go to state 56
+    array         go to state 57
+    arrsize       go to state 20
+    arrnosize     go to state 21
+
+
+State 78
+
+   25 relational_expr: relational_expr TOKEN_GT . addsub_expr
+
+    TOKEN_IDENT     shift, and go to state 1
+    TOKEN_ARRAY     shift, and go to state 14
+    TOKEN_FALSE     shift, and go to state 32
+    TOKEN_TRUE      shift, and go to state 33
+    TOKEN_LPAREN    shift, and go to state 34
+    TOKEN_LCURLY    shift, and go to state 35
+    TOKEN_NOT       shift, and go to state 36
+    TOKEN_MINUS     shift, and go to state 37
+    TOKEN_LIT_STR   shift, and go to state 38
+    TOKEN_LIT_CHAR  shift, and go to state 39
+    TOKEN_LIT_INT   shift, and go to state 29
+
+    addsub_expr   go to state 110
+    mult_expr     go to state 45
+    exp_expr      go to state 46
+    unary_expr    go to state 47
+    postfix_expr  go to state 48
+    grouping      go to state 49
+    types         go to state 50
+    lit_int       go to state 51
+    lit_str       go to state 52
+    lit_char      go to state 53
+    ident         go to state 54
+    bool_true     go to state 55
+    bool_false    go to state 56
+    array         go to state 57
+    arrsize       go to state 20
+    arrnosize     go to state 21
+
+
+State 79
+
+   27 relational_expr: relational_expr TOKEN_GTE . addsub_expr
+
+    TOKEN_IDENT     shift, and go to state 1
+    TOKEN_ARRAY     shift, and go to state 14
+    TOKEN_FALSE     shift, and go to state 32
+    TOKEN_TRUE      shift, and go to state 33
+    TOKEN_LPAREN    shift, and go to state 34
+    TOKEN_LCURLY    shift, and go to state 35
+    TOKEN_NOT       shift, and go to state 36
+    TOKEN_MINUS     shift, and go to state 37
+    TOKEN_LIT_STR   shift, and go to state 38
+    TOKEN_LIT_CHAR  shift, and go to state 39
+    TOKEN_LIT_INT   shift, and go to state 29
+
+    addsub_expr   go to state 111
+    mult_expr     go to state 45
+    exp_expr      go to state 46
+    unary_expr    go to state 47
+    postfix_expr  go to state 48
+    grouping      go to state 49
+    types         go to state 50
+    lit_int       go to state 51
+    lit_str       go to state 52
+    lit_char      go to state 53
+    ident         go to state 54
+    bool_true     go to state 55
+    bool_false    go to state 56
+    array         go to state 57
+    arrsize       go to state 20
+    arrnosize     go to state 21
+
+
+State 80
+
+   28 relational_expr: relational_expr TOKEN_EQUAL . addsub_expr
+
+    TOKEN_IDENT     shift, and go to state 1
+    TOKEN_ARRAY     shift, and go to state 14
+    TOKEN_FALSE     shift, and go to state 32
+    TOKEN_TRUE      shift, and go to state 33
+    TOKEN_LPAREN    shift, and go to state 34
+    TOKEN_LCURLY    shift, and go to state 35
+    TOKEN_NOT       shift, and go to state 36
+    TOKEN_MINUS     shift, and go to state 37
+    TOKEN_LIT_STR   shift, and go to state 38
+    TOKEN_LIT_CHAR  shift, and go to state 39
+    TOKEN_LIT_INT   shift, and go to state 29
+
+    addsub_expr   go to state 112
+    mult_expr     go to state 45
+    exp_expr      go to state 46
+    unary_expr    go to state 47
+    postfix_expr  go to state 48
+    grouping      go to state 49
+    types         go to state 50
+    lit_int       go to state 51
+    lit_str       go to state 52
+    lit_char      go to state 53
+    ident         go to state 54
+    bool_true     go to state 55
+    bool_false    go to state 56
+    array         go to state 57
+    arrsize       go to state 20
+    arrnosize     go to state 21
+
+
+State 81
+
+   29 relational_expr: relational_expr TOKEN_NOTEQ . addsub_expr
+
+    TOKEN_IDENT     shift, and go to state 1
+    TOKEN_ARRAY     shift, and go to state 14
+    TOKEN_FALSE     shift, and go to state 32
+    TOKEN_TRUE      shift, and go to state 33
+    TOKEN_LPAREN    shift, and go to state 34
+    TOKEN_LCURLY    shift, and go to state 35
+    TOKEN_NOT       shift, and go to state 36
+    TOKEN_MINUS     shift, and go to state 37
+    TOKEN_LIT_STR   shift, and go to state 38
+    TOKEN_LIT_CHAR  shift, and go to state 39
+    TOKEN_LIT_INT   shift, and go to state 29
+
+    addsub_expr   go to state 113
+    mult_expr     go to state 45
+    exp_expr      go to state 46
+    unary_expr    go to state 47
+    postfix_expr  go to state 48
+    grouping      go to state 49
+    types         go to state 50
+    lit_int       go to state 51
+    lit_str       go to state 52
+    lit_char      go to state 53
+    ident         go to state 54
+    bool_true     go to state 55
+    bool_false    go to state 56
+    array         go to state 57
+    arrsize       go to state 20
+    arrnosize     go to state 21
+
+
+State 82
+
+   31 addsub_expr: addsub_expr TOKEN_PLUS . mult_expr
+
+    TOKEN_IDENT     shift, and go to state 1
+    TOKEN_ARRAY     shift, and go to state 14
+    TOKEN_FALSE     shift, and go to state 32
+    TOKEN_TRUE      shift, and go to state 33
+    TOKEN_LPAREN    shift, and go to state 34
+    TOKEN_LCURLY    shift, and go to state 35
+    TOKEN_NOT       shift, and go to state 36
+    TOKEN_MINUS     shift, and go to state 37
+    TOKEN_LIT_STR   shift, and go to state 38
+    TOKEN_LIT_CHAR  shift, and go to state 39
+    TOKEN_LIT_INT   shift, and go to state 29
+
+    mult_expr     go to state 114
+    exp_expr      go to state 46
+    unary_expr    go to state 47
+    postfix_expr  go to state 48
+    grouping      go to state 49
+    types         go to state 50
+    lit_int       go to state 51
+    lit_str       go to state 52
+    lit_char      go to state 53
+    ident         go to state 54
+    bool_true     go to state 55
+    bool_false    go to state 56
+    array         go to state 57
+    arrsize       go to state 20
+    arrnosize     go to state 21
+
+
+State 83
+
+   32 addsub_expr: addsub_expr TOKEN_MINUS . mult_expr
+
+    TOKEN_IDENT     shift, and go to state 1
+    TOKEN_ARRAY     shift, and go to state 14
+    TOKEN_FALSE     shift, and go to state 32
+    TOKEN_TRUE      shift, and go to state 33
+    TOKEN_LPAREN    shift, and go to state 34
+    TOKEN_LCURLY    shift, and go to state 35
+    TOKEN_NOT       shift, and go to state 36
+    TOKEN_MINUS     shift, and go to state 37
+    TOKEN_LIT_STR   shift, and go to state 38
+    TOKEN_LIT_CHAR  shift, and go to state 39
+    TOKEN_LIT_INT   shift, and go to state 29
+
+    mult_expr     go to state 115
+    exp_expr      go to state 46
+    unary_expr    go to state 47
+    postfix_expr  go to state 48
+    grouping      go to state 49
+    types         go to state 50
+    lit_int       go to state 51
+    lit_str       go to state 52
+    lit_char      go to state 53
+    ident         go to state 54
+    bool_true     go to state 55
+    bool_false    go to state 56
+    array         go to state 57
+    arrsize       go to state 20
+    arrnosize     go to state 21
+
+
+State 84
+
+   34 mult_expr: mult_expr TOKEN_MULT . exp_expr
+
+    TOKEN_IDENT     shift, and go to state 1
+    TOKEN_ARRAY     shift, and go to state 14
+    TOKEN_FALSE     shift, and go to state 32
+    TOKEN_TRUE      shift, and go to state 33
+    TOKEN_LPAREN    shift, and go to state 34
+    TOKEN_LCURLY    shift, and go to state 35
+    TOKEN_NOT       shift, and go to state 36
+    TOKEN_MINUS     shift, and go to state 37
+    TOKEN_LIT_STR   shift, and go to state 38
+    TOKEN_LIT_CHAR  shift, and go to state 39
+    TOKEN_LIT_INT   shift, and go to state 29
+
+    exp_expr      go to state 116
+    unary_expr    go to state 47
+    postfix_expr  go to state 48
+    grouping      go to state 49
+    types         go to state 50
+    lit_int       go to state 51
+    lit_str       go to state 52
+    lit_char      go to state 53
+    ident         go to state 54
+    bool_true     go to state 55
+    bool_false    go to state 56
+    array         go to state 57
+    arrsize       go to state 20
+    arrnosize     go to state 21
+
+
+State 85
+
+   35 mult_expr: mult_expr TOKEN_DIV . exp_expr
+
+    TOKEN_IDENT     shift, and go to state 1
+    TOKEN_ARRAY     shift, and go to state 14
+    TOKEN_FALSE     shift, and go to state 32
+    TOKEN_TRUE      shift, and go to state 33
+    TOKEN_LPAREN    shift, and go to state 34
+    TOKEN_LCURLY    shift, and go to state 35
+    TOKEN_NOT       shift, and go to state 36
+    TOKEN_MINUS     shift, and go to state 37
+    TOKEN_LIT_STR   shift, and go to state 38
+    TOKEN_LIT_CHAR  shift, and go to state 39
+    TOKEN_LIT_INT   shift, and go to state 29
+
+    exp_expr      go to state 117
+    unary_expr    go to state 47
+    postfix_expr  go to state 48
+    grouping      go to state 49
+    types         go to state 50
+    lit_int       go to state 51
+    lit_str       go to state 52
+    lit_char      go to state 53
+    ident         go to state 54
+    bool_true     go to state 55
+    bool_false    go to state 56
+    array         go to state 57
+    arrsize       go to state 20
+    arrnosize     go to state 21
+
+
+State 86
+
+   36 mult_expr: mult_expr TOKEN_MOD . exp_expr
+
+    TOKEN_IDENT     shift, and go to state 1
+    TOKEN_ARRAY     shift, and go to state 14
+    TOKEN_FALSE     shift, and go to state 32
+    TOKEN_TRUE      shift, and go to state 33
+    TOKEN_LPAREN    shift, and go to state 34
+    TOKEN_LCURLY    shift, and go to state 35
+    TOKEN_NOT       shift, and go to state 36
+    TOKEN_MINUS     shift, and go to state 37
+    TOKEN_LIT_STR   shift, and go to state 38
+    TOKEN_LIT_CHAR  shift, and go to state 39
+    TOKEN_LIT_INT   shift, and go to state 29
+
+    exp_expr      go to state 118
+    unary_expr    go to state 47
+    postfix_expr  go to state 48
+    grouping      go to state 49
+    types         go to state 50
+    lit_int       go to state 51
+    lit_str       go to state 52
+    lit_char      go to state 53
+    ident         go to state 54
+    bool_true     go to state 55
+    bool_false    go to state 56
+    array         go to state 57
+    arrsize       go to state 20
+    arrnosize     go to state 21
+
+
+State 87
+
+   38 exp_expr: exp_expr TOKEN_EXPONENT . unary_expr
+
+    TOKEN_IDENT     shift, and go to state 1
+    TOKEN_ARRAY     shift, and go to state 14
+    TOKEN_FALSE     shift, and go to state 32
+    TOKEN_TRUE      shift, and go to state 33
+    TOKEN_LPAREN    shift, and go to state 34
+    TOKEN_LCURLY    shift, and go to state 35
+    TOKEN_NOT       shift, and go to state 36
+    TOKEN_MINUS     shift, and go to state 37
+    TOKEN_LIT_STR   shift, and go to state 38
+    TOKEN_LIT_CHAR  shift, and go to state 39
+    TOKEN_LIT_INT   shift, and go to state 29
+
+    unary_expr    go to state 119
+    postfix_expr  go to state 48
+    grouping      go to state 49
+    types         go to state 50
+    lit_int       go to state 51
+    lit_str       go to state 52
+    lit_char      go to state 53
+    ident         go to state 54
+    bool_true     go to state 55
+    bool_false    go to state 56
+    array         go to state 57
+    arrsize       go to state 20
+    arrnosize     go to state 21
+
+
+State 88
+
+   43 postfix_expr: postfix_expr TOKEN_INCREMENT .
+
+    $default  reduce using rule 43 (postfix_expr)
+
+
+State 89
+
+   44 postfix_expr: postfix_expr TOKEN_DECREMENT .
+
+    $default  reduce using rule 44 (postfix_expr)
+
+
+State 90
+
+   46 grouping: ident TOKEN_LPAREN . expr_list TOKEN_RPAREN
+   47         | ident TOKEN_LPAREN . TOKEN_RPAREN
+
+    TOKEN_IDENT     shift, and go to state 1
+    TOKEN_ARRAY     shift, and go to state 14
+    TOKEN_FALSE     shift, and go to state 32
+    TOKEN_TRUE      shift, and go to state 33
+    TOKEN_LPAREN    shift, and go to state 34
+    TOKEN_RPAREN    shift, and go to state 120
+    TOKEN_LCURLY    shift, and go to state 35
+    TOKEN_NOT       shift, and go to state 36
+    TOKEN_MINUS     shift, and go to state 37
+    TOKEN_LIT_STR   shift, and go to state 38
+    TOKEN_LIT_CHAR  shift, and go to state 39
+    TOKEN_LIT_INT   shift, and go to state 29
+
+    expression        go to state 67
+    logical_or_expr   go to state 41
+    logical_and_expr  go to state 42
+    relational_expr   go to state 43
+    addsub_expr       go to state 44
+    mult_expr         go to state 45
+    exp_expr          go to state 46
+    unary_expr        go to state 47
+    postfix_expr      go to state 48
+    grouping          go to state 49
+    types             go to state 50
+    lit_int           go to state 51
+    lit_str           go to state 52
+    lit_char          go to state 53
+    ident             go to state 54
+    bool_true         go to state 55
+    bool_false        go to state 56
+    array             go to state 57
+    arrsize           go to state 20
+    arrnosize         go to state 21
+    expr_list         go to state 121
+
+
+State 91
+
+   77 square_brackets: TOKEN_LBRACKET . expression TOKEN_RBRACKET square_brackets
+   78                | TOKEN_LBRACKET . expression TOKEN_RBRACKET
+   79                | TOKEN_LBRACKET . statements TOKEN_RBRACKET square_brackets
+   80                | TOKEN_LBRACKET . statements TOKEN_RBRACKET
+
+    TOKEN_IDENT     shift, and go to state 1
+    TOKEN_ARRAY     shift, and go to state 14
+    TOKEN_FALSE     shift, and go to state 32
+    TOKEN_TRUE      shift, and go to state 33
+    TOKEN_IF        shift, and go to state 122
+    TOKEN_FOR       shift, and go to state 123
+    TOKEN_PRINT     shift, and go to state 124
+    TOKEN_RETURN    shift, and go to state 125
+    TOKEN_LPAREN    shift, and go to state 34
+    TOKEN_LCURLY    shift, and go to state 126
+    TOKEN_NOT       shift, and go to state 36
+    TOKEN_MINUS     shift, and go to state 37
+    TOKEN_LIT_STR   shift, and go to state 38
+    TOKEN_LIT_CHAR  shift, and go to state 39
+    TOKEN_LIT_INT   shift, and go to state 29
+
+    declaration       go to state 127
+    expression        go to state 128
+    logical_or_expr   go to state 41
+    logical_and_expr  go to state 42
+    relational_expr   go to state 43
+    addsub_expr       go to state 44
+    mult_expr         go to state 45
+    exp_expr          go to state 46
+    unary_expr        go to state 47
+    postfix_expr      go to state 48
+    grouping          go to state 49
+    types             go to state 50
+    lit_int           go to state 51
+    lit_str           go to state 52
+    lit_char          go to state 53
+    ident             go to state 129
+    bool_true         go to state 55
+    bool_false        go to state 56
+    array             go to state 57
+    arrsize           go to state 20
+    arrnosize         go to state 21
+    statements        go to state 130
+    open_statement    go to state 131
+    closed_statement  go to state 132
+    other_statements  go to state 133
+
+
+State 92
+
+   51 grouping: ident square_brackets .
+
+    $default  reduce using rule 51 (grouping)
+
+
+State 93
+
+   13 declaration: ident TOKEN_COLON array TOKEN_ASSIGN TOKEN_LCURLY expr_list . TOKEN_RCURLY TOKEN_SEMICOLON
+  101 expr_list: expr_list . TOKEN_COMMA expression
+
+    TOKEN_COMMA   shift, and go to state 102
+    TOKEN_RCURLY  shift, and go to state 134
+
+
+State 94
+
+   75 arrnosize: TOKEN_ARRAY TOKEN_LBRACKET . TOKEN_RBRACKET type_specifier
+   76          | TOKEN_ARRAY TOKEN_LBRACKET . TOKEN_RBRACKET arrnosize
+
+    TOKEN_RBRACKET  shift, and go to state 28
+
+
+State 95
+
+   73 arrsize: TOKEN_ARRAY . TOKEN_LBRACKET lit_int TOKEN_RBRACKET type_specifier
+   74        | TOKEN_ARRAY . TOKEN_LBRACKET lit_int TOKEN_RBRACKET arrsize
+
+    TOKEN_LBRACKET  shift, and go to state 135
+
+
+State 96
+
+   73 arrsize: TOKEN_ARRAY TOKEN_LBRACKET lit_int TOKEN_RBRACKET type_specifier .
+
+    $default  reduce using rule 73 (arrsize)
+
+
+State 97
+
+   74 arrsize: TOKEN_ARRAY TOKEN_LBRACKET lit_int TOKEN_RBRACKET arrsize .
+
+    $default  reduce using rule 74 (arrsize)
+
+
+State 98
+
+    9 functions: ident TOKEN_COLON TOKEN_FUNCTION type_specifier TOKEN_LPAREN TOKEN_RPAREN TOKEN_SEMICOLON .
+
+    $default  reduce using rule 9 (functions)
+
+
+State 99
+
+    7 functions: ident TOKEN_COLON TOKEN_FUNCTION type_specifier TOKEN_LPAREN TOKEN_RPAREN TOKEN_ASSIGN . TOKEN_LCURLY statements TOKEN_RCURLY
+
+    TOKEN_LCURLY  shift, and go to state 136
+
+
+State 100
+
+    6 functions: ident TOKEN_COLON TOKEN_FUNCTION type_specifier TOKEN_LPAREN parameter_list TOKEN_RPAREN . TOKEN_ASSIGN TOKEN_LCURLY statements TOKEN_RCURLY
+    8          | ident TOKEN_COLON TOKEN_FUNCTION type_specifier TOKEN_LPAREN parameter_list TOKEN_RPAREN . TOKEN_SEMICOLON
+
+    TOKEN_SEMICOLON  shift, and go to state 137
+    TOKEN_ASSIGN     shift, and go to state 138
+
+
+State 101
+
+   14 parameter_list: ident TOKEN_COLON . type_specifier TOKEN_COMMA parameter_list
+   15               | ident TOKEN_COLON . type_specifier
+   16               | ident TOKEN_COLON . arrnosize TOKEN_COMMA parameter_list
+   17               | ident TOKEN_COLON . arrnosize
+
+    TOKEN_CHAR     shift, and go to state 11
+    TOKEN_INTEGER  shift, and go to state 12
+    TOKEN_STRING   shift, and go to state 13
+    TOKEN_ARRAY    shift, and go to state 59
+    TOKEN_VOID     shift, and go to state 15
+    TOKEN_BOOLEAN  shift, and go to state 16
+
+    type_specifier  go to state 139
+    arrnosize       go to state 140
+
+
+State 102
+
+  101 expr_list: expr_list TOKEN_COMMA . expression
+
+    TOKEN_IDENT     shift, and go to state 1
+    TOKEN_ARRAY     shift, and go to state 14
+    TOKEN_FALSE     shift, and go to state 32
+    TOKEN_TRUE      shift, and go to state 33
+    TOKEN_LPAREN    shift, and go to state 34
+    TOKEN_LCURLY    shift, and go to state 35
+    TOKEN_NOT       shift, and go to state 36
+    TOKEN_MINUS     shift, and go to state 37
+    TOKEN_LIT_STR   shift, and go to state 38
+    TOKEN_LIT_CHAR  shift, and go to state 39
+    TOKEN_LIT_INT   shift, and go to state 29
+
+    expression        go to state 141
+    logical_or_expr   go to state 41
+    logical_and_expr  go to state 42
+    relational_expr   go to state 43
+    addsub_expr       go to state 44
+    mult_expr         go to state 45
+    exp_expr          go to state 46
+    unary_expr        go to state 47
+    postfix_expr      go to state 48
+    grouping          go to state 49
+    types             go to state 50
+    lit_int           go to state 51
+    lit_str           go to state 52
+    lit_char          go to state 53
+    ident             go to state 54
+    bool_true         go to state 55
+    bool_false        go to state 56
+    array             go to state 57
+    arrsize           go to state 20
+    arrnosize         go to state 21
+
+
+State 103
+
+   48 grouping: TOKEN_LPAREN expr_list TOKEN_RPAREN .
+
+    $default  reduce using rule 48 (grouping)
+
+
+State 104
+
+   50 grouping: TOKEN_LCURLY expr_list TOKEN_RCURLY .
+
+    $default  reduce using rule 50 (grouping)
+
+
+State 105
+
+   18 expression: expression TOKEN_ASSIGN logical_or_expr .
+   20 logical_or_expr: logical_or_expr . TOKEN_OR logical_and_expr
+
+    TOKEN_OR  shift, and go to state 74
+
+    $default  reduce using rule 18 (expression)
+
+
+State 106
+
+   20 logical_or_expr: logical_or_expr TOKEN_OR logical_and_expr .
+   22 logical_and_expr: logical_and_expr . TOKEN_AND relational_expr
+
+    TOKEN_AND  shift, and go to state 75
+
+    $default  reduce using rule 20 (logical_or_expr)
+
+
+State 107
+
+   22 logical_and_expr: logical_and_expr TOKEN_AND relational_expr .
+   24 relational_expr: relational_expr . TOKEN_LT addsub_expr
+   25                | relational_expr . TOKEN_GT addsub_expr
+   26                | relational_expr . TOKEN_LTE addsub_expr
+   27                | relational_expr . TOKEN_GTE addsub_expr
+   28                | relational_expr . TOKEN_EQUAL addsub_expr
+   29                | relational_expr . TOKEN_NOTEQ addsub_expr
+
+    TOKEN_LT     shift, and go to state 76
+    TOKEN_LTE    shift, and go to state 77
+    TOKEN_GT     shift, and go to state 78
+    TOKEN_GTE    shift, and go to state 79
+    TOKEN_EQUAL  shift, and go to state 80
+    TOKEN_NOTEQ  shift, and go to state 81
+
+    $default  reduce using rule 22 (logical_and_expr)
+
+
+State 108
+
+   24 relational_expr: relational_expr TOKEN_LT addsub_expr .
+   31 addsub_expr: addsub_expr . TOKEN_PLUS mult_expr
+   32            | addsub_expr . TOKEN_MINUS mult_expr
+
+    TOKEN_PLUS   shift, and go to state 82
+    TOKEN_MINUS  shift, and go to state 83
+
+    $default  reduce using rule 24 (relational_expr)
+
+
+State 109
+
+   26 relational_expr: relational_expr TOKEN_LTE addsub_expr .
+   31 addsub_expr: addsub_expr . TOKEN_PLUS mult_expr
+   32            | addsub_expr . TOKEN_MINUS mult_expr
+
+    TOKEN_PLUS   shift, and go to state 82
+    TOKEN_MINUS  shift, and go to state 83
+
+    $default  reduce using rule 26 (relational_expr)
+
+
+State 110
+
+   25 relational_expr: relational_expr TOKEN_GT addsub_expr .
+   31 addsub_expr: addsub_expr . TOKEN_PLUS mult_expr
+   32            | addsub_expr . TOKEN_MINUS mult_expr
+
+    TOKEN_PLUS   shift, and go to state 82
+    TOKEN_MINUS  shift, and go to state 83
+
+    $default  reduce using rule 25 (relational_expr)
+
+
+State 111
+
+   27 relational_expr: relational_expr TOKEN_GTE addsub_expr .
+   31 addsub_expr: addsub_expr . TOKEN_PLUS mult_expr
+   32            | addsub_expr . TOKEN_MINUS mult_expr
+
+    TOKEN_PLUS   shift, and go to state 82
+    TOKEN_MINUS  shift, and go to state 83
+
+    $default  reduce using rule 27 (relational_expr)
+
+
+State 112
+
+   28 relational_expr: relational_expr TOKEN_EQUAL addsub_expr .
+   31 addsub_expr: addsub_expr . TOKEN_PLUS mult_expr
+   32            | addsub_expr . TOKEN_MINUS mult_expr
+
+    TOKEN_PLUS   shift, and go to state 82
+    TOKEN_MINUS  shift, and go to state 83
+
+    $default  reduce using rule 28 (relational_expr)
+
+
+State 113
+
+   29 relational_expr: relational_expr TOKEN_NOTEQ addsub_expr .
+   31 addsub_expr: addsub_expr . TOKEN_PLUS mult_expr
+   32            | addsub_expr . TOKEN_MINUS mult_expr
+
+    TOKEN_PLUS   shift, and go to state 82
+    TOKEN_MINUS  shift, and go to state 83
+
+    $default  reduce using rule 29 (relational_expr)
+
+
+State 114
+
+   31 addsub_expr: addsub_expr TOKEN_PLUS mult_expr .
+   34 mult_expr: mult_expr . TOKEN_MULT exp_expr
+   35          | mult_expr . TOKEN_DIV exp_expr
+   36          | mult_expr . TOKEN_MOD exp_expr
+
+    TOKEN_MULT  shift, and go to state 84
+    TOKEN_DIV   shift, and go to state 85
+    TOKEN_MOD   shift, and go to state 86
+
+    $default  reduce using rule 31 (addsub_expr)
+
+
+State 115
+
+   32 addsub_expr: addsub_expr TOKEN_MINUS mult_expr .
+   34 mult_expr: mult_expr . TOKEN_MULT exp_expr
+   35          | mult_expr . TOKEN_DIV exp_expr
+   36          | mult_expr . TOKEN_MOD exp_expr
+
+    TOKEN_MULT  shift, and go to state 84
+    TOKEN_DIV   shift, and go to state 85
+    TOKEN_MOD   shift, and go to state 86
+
+    $default  reduce using rule 32 (addsub_expr)
+
+
+State 116
+
+   34 mult_expr: mult_expr TOKEN_MULT exp_expr .
+   38 exp_expr: exp_expr . TOKEN_EXPONENT unary_expr
+
+    TOKEN_EXPONENT  shift, and go to state 87
+
+    $default  reduce using rule 34 (mult_expr)
+
+
+State 117
+
+   35 mult_expr: mult_expr TOKEN_DIV exp_expr .
+   38 exp_expr: exp_expr . TOKEN_EXPONENT unary_expr
+
+    TOKEN_EXPONENT  shift, and go to state 87
+
+    $default  reduce using rule 35 (mult_expr)
+
+
+State 118
+
+   36 mult_expr: mult_expr TOKEN_MOD exp_expr .
+   38 exp_expr: exp_expr . TOKEN_EXPONENT unary_expr
+
+    TOKEN_EXPONENT  shift, and go to state 87
+
+    $default  reduce using rule 36 (mult_expr)
+
+
+State 119
+
+   38 exp_expr: exp_expr TOKEN_EXPONENT unary_expr .
+
+    $default  reduce using rule 38 (exp_expr)
+
+
+State 120
+
+   47 grouping: ident TOKEN_LPAREN TOKEN_RPAREN .
+
+    $default  reduce using rule 47 (grouping)
+
+
+State 121
+
+   46 grouping: ident TOKEN_LPAREN expr_list . TOKEN_RPAREN
+  101 expr_list: expr_list . TOKEN_COMMA expression
+
+    TOKEN_COMMA   shift, and go to state 102
+    TOKEN_RPAREN  shift, and go to state 142
+
+
+State 122
+
+   85 open_statement: TOKEN_IF . TOKEN_LPAREN expression TOKEN_RPAREN open_statement
+   86               | TOKEN_IF . TOKEN_LPAREN expression TOKEN_RPAREN closed_statement
+   87               | TOKEN_IF . TOKEN_LPAREN expression TOKEN_RPAREN closed_statement TOKEN_ELSE open_statement
+   89 closed_statement: TOKEN_IF . TOKEN_LPAREN expression TOKEN_RPAREN closed_statement TOKEN_ELSE closed_statement
+
+    TOKEN_LPAREN  shift, and go to state 143
+
+
+State 123
+
+   88 open_statement: TOKEN_FOR . TOKEN_LPAREN loop_params_maybe TOKEN_SEMICOLON loop_params_maybe TOKEN_SEMICOLON loop_params_maybe TOKEN_RPAREN open_statement
+   90 closed_statement: TOKEN_FOR . TOKEN_LPAREN loop_params_maybe TOKEN_SEMICOLON loop_params_maybe TOKEN_SEMICOLON loop_params_maybe TOKEN_RPAREN closed_statement
+
+    TOKEN_LPAREN  shift, and go to state 144
+
+
+State 124
+
+   94 other_statements: TOKEN_PRINT . expr_list TOKEN_SEMICOLON
+   95                 | TOKEN_PRINT . TOKEN_SEMICOLON
+
+    TOKEN_IDENT      shift, and go to state 1
+    TOKEN_ARRAY      shift, and go to state 14
+    TOKEN_FALSE      shift, and go to state 32
+    TOKEN_TRUE       shift, and go to state 33
+    TOKEN_SEMICOLON  shift, and go to state 145
+    TOKEN_LPAREN     shift, and go to state 34
+    TOKEN_LCURLY     shift, and go to state 35
+    TOKEN_NOT        shift, and go to state 36
+    TOKEN_MINUS      shift, and go to state 37
+    TOKEN_LIT_STR    shift, and go to state 38
+    TOKEN_LIT_CHAR   shift, and go to state 39
+    TOKEN_LIT_INT    shift, and go to state 29
+
+    expression        go to state 67
+    logical_or_expr   go to state 41
+    logical_and_expr  go to state 42
+    relational_expr   go to state 43
+    addsub_expr       go to state 44
+    mult_expr         go to state 45
+    exp_expr          go to state 46
+    unary_expr        go to state 47
+    postfix_expr      go to state 48
+    grouping          go to state 49
+    types             go to state 50
+    lit_int           go to state 51
+    lit_str           go to state 52
+    lit_char          go to state 53
+    ident             go to state 54
+    bool_true         go to state 55
+    bool_false        go to state 56
+    array             go to state 57
+    arrsize           go to state 20
+    arrnosize         go to state 21
+    expr_list         go to state 146
+
+
+State 125
+
+   96 other_statements: TOKEN_RETURN . expression TOKEN_SEMICOLON
+   97                 | TOKEN_RETURN . TOKEN_SEMICOLON
+
+    TOKEN_IDENT      shift, and go to state 1
+    TOKEN_ARRAY      shift, and go to state 14
+    TOKEN_FALSE      shift, and go to state 32
+    TOKEN_TRUE       shift, and go to state 33
+    TOKEN_SEMICOLON  shift, and go to state 147
+    TOKEN_LPAREN     shift, and go to state 34
+    TOKEN_LCURLY     shift, and go to state 35
+    TOKEN_NOT        shift, and go to state 36
+    TOKEN_MINUS      shift, and go to state 37
+    TOKEN_LIT_STR    shift, and go to state 38
+    TOKEN_LIT_CHAR   shift, and go to state 39
+    TOKEN_LIT_INT    shift, and go to state 29
+
+    expression        go to state 148
+    logical_or_expr   go to state 41
+    logical_and_expr  go to state 42
+    relational_expr   go to state 43
+    addsub_expr       go to state 44
+    mult_expr         go to state 45
+    exp_expr          go to state 46
+    unary_expr        go to state 47
+    postfix_expr      go to state 48
+    grouping          go to state 49
+    types             go to state 50
+    lit_int           go to state 51
+    lit_str           go to state 52
+    lit_char          go to state 53
+    ident             go to state 54
+    bool_true         go to state 55
+    bool_false        go to state 56
+    array             go to state 57
+    arrsize           go to state 20
+    arrnosize         go to state 21
+
+
+State 126
+
+   50 grouping: TOKEN_LCURLY . expr_list TOKEN_RCURLY
+   98 other_statements: TOKEN_LCURLY . statements TOKEN_RCURLY
+
+    TOKEN_IDENT     shift, and go to state 1
+    TOKEN_ARRAY     shift, and go to state 14
+    TOKEN_FALSE     shift, and go to state 32
+    TOKEN_TRUE      shift, and go to state 33
+    TOKEN_IF        shift, and go to state 122
+    TOKEN_FOR       shift, and go to state 123
+    TOKEN_PRINT     shift, and go to state 124
+    TOKEN_RETURN    shift, and go to state 125
+    TOKEN_LPAREN    shift, and go to state 34
+    TOKEN_LCURLY    shift, and go to state 126
+    TOKEN_NOT       shift, and go to state 36
+    TOKEN_MINUS     shift, and go to state 37
+    TOKEN_LIT_STR   shift, and go to state 38
+    TOKEN_LIT_CHAR  shift, and go to state 39
+    TOKEN_LIT_INT   shift, and go to state 29
+
+    declaration       go to state 127
+    expression        go to state 149
+    logical_or_expr   go to state 41
+    logical_and_expr  go to state 42
+    relational_expr   go to state 43
+    addsub_expr       go to state 44
+    mult_expr         go to state 45
+    exp_expr          go to state 46
+    unary_expr        go to state 47
+    postfix_expr      go to state 48
+    grouping          go to state 49
+    types             go to state 50
+    lit_int           go to state 51
+    lit_str           go to state 52
+    lit_char          go to state 53
+    ident             go to state 129
+    bool_true         go to state 55
+    bool_false        go to state 56
+    array             go to state 57
+    arrsize           go to state 20
+    arrnosize         go to state 21
+    statements        go to state 150
+    open_statement    go to state 131
+    closed_statement  go to state 132
+    other_statements  go to state 133
+    expr_list         go to state 69
+
+
+State 127
+
+  100 other_statements: declaration .
+
+    $default  reduce using rule 100 (other_statements)
+
+
+State 128
+
+   18 expression: expression . TOKEN_ASSIGN logical_or_expr
+   77 square_brackets: TOKEN_LBRACKET expression . TOKEN_RBRACKET square_brackets
+   78                | TOKEN_LBRACKET expression . TOKEN_RBRACKET
+   99 other_statements: expression . TOKEN_SEMICOLON
+
+    TOKEN_SEMICOLON  shift, and go to state 151
+    TOKEN_RBRACKET   shift, and go to state 152
+    TOKEN_ASSIGN     shift, and go to state 73
+
+
+State 129
+
+   10 declaration: ident . TOKEN_COLON type_specifier TOKEN_SEMICOLON
+   11            | ident . TOKEN_COLON array TOKEN_SEMICOLON
+   12            | ident . TOKEN_COLON type_specifier TOKEN_ASSIGN expression TOKEN_SEMICOLON
+   13            | ident . TOKEN_COLON array TOKEN_ASSIGN TOKEN_LCURLY expr_list TOKEN_RCURLY TOKEN_SEMICOLON
+   46 grouping: ident . TOKEN_LPAREN expr_list TOKEN_RPAREN
+   47         | ident . TOKEN_LPAREN TOKEN_RPAREN
+   51         | ident . square_brackets
+   56 types: ident .
+
+    TOKEN_COLON     shift, and go to state 153
+    TOKEN_LPAREN    shift, and go to state 90
+    TOKEN_LBRACKET  shift, and go to state 91
+
+    $default  reduce using rule 56 (types)
+
+    square_brackets  go to state 92
+
+
+State 130
+
+   79 square_brackets: TOKEN_LBRACKET statements . TOKEN_RBRACKET square_brackets
+   80                | TOKEN_LBRACKET statements . TOKEN_RBRACKET
+
+    TOKEN_RBRACKET  shift, and go to state 154
+
+
+State 131
+
+   81 statements: open_statement . statements
+   83           | open_statement .
+
+    TOKEN_IDENT     shift, and go to state 1
+    TOKEN_ARRAY     shift, and go to state 14
+    TOKEN_FALSE     shift, and go to state 32
+    TOKEN_TRUE      shift, and go to state 33
+    TOKEN_IF        shift, and go to state 122
+    TOKEN_FOR       shift, and go to state 123
+    TOKEN_PRINT     shift, and go to state 124
+    TOKEN_RETURN    shift, and go to state 125
+    TOKEN_LPAREN    shift, and go to state 34
+    TOKEN_LCURLY    shift, and go to state 126
+    TOKEN_NOT       shift, and go to state 36
+    TOKEN_MINUS     shift, and go to state 37
+    TOKEN_LIT_STR   shift, and go to state 38
+    TOKEN_LIT_CHAR  shift, and go to state 39
+    TOKEN_LIT_INT   shift, and go to state 29
+
+    $default  reduce using rule 83 (statements)
+
+    declaration       go to state 127
+    expression        go to state 155
+    logical_or_expr   go to state 41
+    logical_and_expr  go to state 42
+    relational_expr   go to state 43
+    addsub_expr       go to state 44
+    mult_expr         go to state 45
+    exp_expr          go to state 46
+    unary_expr        go to state 47
+    postfix_expr      go to state 48
+    grouping          go to state 49
+    types             go to state 50
+    lit_int           go to state 51
+    lit_str           go to state 52
+    lit_char          go to state 53
+    ident             go to state 129
+    bool_true         go to state 55
+    bool_false        go to state 56
+    array             go to state 57
+    arrsize           go to state 20
+    arrnosize         go to state 21
+    statements        go to state 156
+    open_statement    go to state 131
+    closed_statement  go to state 132
+    other_statements  go to state 133
+
+
+State 132
+
+   82 statements: closed_statement . statements
+   84           | closed_statement .
+
+    TOKEN_IDENT     shift, and go to state 1
+    TOKEN_ARRAY     shift, and go to state 14
+    TOKEN_FALSE     shift, and go to state 32
+    TOKEN_TRUE      shift, and go to state 33
+    TOKEN_IF        shift, and go to state 122
+    TOKEN_FOR       shift, and go to state 123
+    TOKEN_PRINT     shift, and go to state 124
+    TOKEN_RETURN    shift, and go to state 125
+    TOKEN_LPAREN    shift, and go to state 34
+    TOKEN_LCURLY    shift, and go to state 126
+    TOKEN_NOT       shift, and go to state 36
+    TOKEN_MINUS     shift, and go to state 37
+    TOKEN_LIT_STR   shift, and go to state 38
+    TOKEN_LIT_CHAR  shift, and go to state 39
+    TOKEN_LIT_INT   shift, and go to state 29
+
+    $default  reduce using rule 84 (statements)
+
+    declaration       go to state 127
+    expression        go to state 155
+    logical_or_expr   go to state 41
+    logical_and_expr  go to state 42
+    relational_expr   go to state 43
+    addsub_expr       go to state 44
+    mult_expr         go to state 45
+    exp_expr          go to state 46
+    unary_expr        go to state 47
+    postfix_expr      go to state 48
+    grouping          go to state 49
+    types             go to state 50
+    lit_int           go to state 51
+    lit_str           go to state 52
+    lit_char          go to state 53
+    ident             go to state 129
+    bool_true         go to state 55
+    bool_false        go to state 56
+    array             go to state 57
+    arrsize           go to state 20
+    arrnosize         go to state 21
+    statements        go to state 157
+    open_statement    go to state 131
+    closed_statement  go to state 132
+    other_statements  go to state 133
+
+
+State 133
+
+   91 closed_statement: other_statements .
+
+    $default  reduce using rule 91 (closed_statement)
+
+
+State 134
+
+   13 declaration: ident TOKEN_COLON array TOKEN_ASSIGN TOKEN_LCURLY expr_list TOKEN_RCURLY . TOKEN_SEMICOLON
+
+    TOKEN_SEMICOLON  shift, and go to state 158
+
+
+State 135
+
+   73 arrsize: TOKEN_ARRAY TOKEN_LBRACKET . lit_int TOKEN_RBRACKET type_specifier
+   74        | TOKEN_ARRAY TOKEN_LBRACKET . lit_int TOKEN_RBRACKET arrsize
+
+    TOKEN_LIT_INT  shift, and go to state 29
+
+    lit_int  go to state 30
+
+
+State 136
+
+    7 functions: ident TOKEN_COLON TOKEN_FUNCTION type_specifier TOKEN_LPAREN TOKEN_RPAREN TOKEN_ASSIGN TOKEN_LCURLY . statements TOKEN_RCURLY
+
+    TOKEN_IDENT     shift, and go to state 1
+    TOKEN_ARRAY     shift, and go to state 14
+    TOKEN_FALSE     shift, and go to state 32
+    TOKEN_TRUE      shift, and go to state 33
+    TOKEN_IF        shift, and go to state 122
+    TOKEN_FOR       shift, and go to state 123
+    TOKEN_PRINT     shift, and go to state 124
+    TOKEN_RETURN    shift, and go to state 125
+    TOKEN_LPAREN    shift, and go to state 34
+    TOKEN_LCURLY    shift, and go to state 126
+    TOKEN_NOT       shift, and go to state 36
+    TOKEN_MINUS     shift, and go to state 37
+    TOKEN_LIT_STR   shift, and go to state 38
+    TOKEN_LIT_CHAR  shift, and go to state 39
+    TOKEN_LIT_INT   shift, and go to state 29
+
+    declaration       go to state 127
+    expression        go to state 155
+    logical_or_expr   go to state 41
+    logical_and_expr  go to state 42
+    relational_expr   go to state 43
+    addsub_expr       go to state 44
+    mult_expr         go to state 45
+    exp_expr          go to state 46
+    unary_expr        go to state 47
+    postfix_expr      go to state 48
+    grouping          go to state 49
+    types             go to state 50
+    lit_int           go to state 51
+    lit_str           go to state 52
+    lit_char          go to state 53
+    ident             go to state 129
+    bool_true         go to state 55
+    bool_false        go to state 56
+    array             go to state 57
+    arrsize           go to state 20
+    arrnosize         go to state 21
+    statements        go to state 159
+    open_statement    go to state 131
+    closed_statement  go to state 132
+    other_statements  go to state 133
+
+
+State 137
+
+    8 functions: ident TOKEN_COLON TOKEN_FUNCTION type_specifier TOKEN_LPAREN parameter_list TOKEN_RPAREN TOKEN_SEMICOLON .
+
+    $default  reduce using rule 8 (functions)
+
+
+State 138
+
+    6 functions: ident TOKEN_COLON TOKEN_FUNCTION type_specifier TOKEN_LPAREN parameter_list TOKEN_RPAREN TOKEN_ASSIGN . TOKEN_LCURLY statements TOKEN_RCURLY
+
+    TOKEN_LCURLY  shift, and go to state 160
+
+
+State 139
+
+   14 parameter_list: ident TOKEN_COLON type_specifier . TOKEN_COMMA parameter_list
+   15               | ident TOKEN_COLON type_specifier .
+
+    TOKEN_COMMA  shift, and go to state 161
+
+    $default  reduce using rule 15 (parameter_list)
+
+
+State 140
+
+   16 parameter_list: ident TOKEN_COLON arrnosize . TOKEN_COMMA parameter_list
+   17               | ident TOKEN_COLON arrnosize .
+
+    TOKEN_COMMA  shift, and go to state 162
+
+    $default  reduce using rule 17 (parameter_list)
+
+
+State 141
+
+   18 expression: expression . TOKEN_ASSIGN logical_or_expr
+  101 expr_list: expr_list TOKEN_COMMA expression .
+
+    TOKEN_ASSIGN  shift, and go to state 73
+
+    $default  reduce using rule 101 (expr_list)
+
+
+State 142
+
+   46 grouping: ident TOKEN_LPAREN expr_list TOKEN_RPAREN .
+
+    $default  reduce using rule 46 (grouping)
+
+
+State 143
+
+   85 open_statement: TOKEN_IF TOKEN_LPAREN . expression TOKEN_RPAREN open_statement
+   86               | TOKEN_IF TOKEN_LPAREN . expression TOKEN_RPAREN closed_statement
+   87               | TOKEN_IF TOKEN_LPAREN . expression TOKEN_RPAREN closed_statement TOKEN_ELSE open_statement
+   89 closed_statement: TOKEN_IF TOKEN_LPAREN . expression TOKEN_RPAREN closed_statement TOKEN_ELSE closed_statement
+
+    TOKEN_IDENT     shift, and go to state 1
+    TOKEN_ARRAY     shift, and go to state 14
+    TOKEN_FALSE     shift, and go to state 32
+    TOKEN_TRUE      shift, and go to state 33
+    TOKEN_LPAREN    shift, and go to state 34
+    TOKEN_LCURLY    shift, and go to state 35
+    TOKEN_NOT       shift, and go to state 36
+    TOKEN_MINUS     shift, and go to state 37
+    TOKEN_LIT_STR   shift, and go to state 38
+    TOKEN_LIT_CHAR  shift, and go to state 39
+    TOKEN_LIT_INT   shift, and go to state 29
+
+    expression        go to state 163
+    logical_or_expr   go to state 41
+    logical_and_expr  go to state 42
+    relational_expr   go to state 43
+    addsub_expr       go to state 44
+    mult_expr         go to state 45
+    exp_expr          go to state 46
+    unary_expr        go to state 47
+    postfix_expr      go to state 48
+    grouping          go to state 49
+    types             go to state 50
+    lit_int           go to state 51
+    lit_str           go to state 52
+    lit_char          go to state 53
+    ident             go to state 54
+    bool_true         go to state 55
+    bool_false        go to state 56
+    array             go to state 57
+    arrsize           go to state 20
+    arrnosize         go to state 21
+
+
+State 144
+
+   88 open_statement: TOKEN_FOR TOKEN_LPAREN . loop_params_maybe TOKEN_SEMICOLON loop_params_maybe TOKEN_SEMICOLON loop_params_maybe TOKEN_RPAREN open_statement
+   90 closed_statement: TOKEN_FOR TOKEN_LPAREN . loop_params_maybe TOKEN_SEMICOLON loop_params_maybe TOKEN_SEMICOLON loop_params_maybe TOKEN_RPAREN closed_statement
+
+    TOKEN_IDENT     shift, and go to state 1
+    TOKEN_ARRAY     shift, and go to state 14
+    TOKEN_FALSE     shift, and go to state 32
+    TOKEN_TRUE      shift, and go to state 33
+    TOKEN_LPAREN    shift, and go to state 34
+    TOKEN_LCURLY    shift, and go to state 35
+    TOKEN_NOT       shift, and go to state 36
+    TOKEN_MINUS     shift, and go to state 37
+    TOKEN_LIT_STR   shift, and go to state 38
+    TOKEN_LIT_CHAR  shift, and go to state 39
+    TOKEN_LIT_INT   shift, and go to state 29
+
+    $default  reduce using rule 92 (loop_params_maybe)
+
+    expression         go to state 164
+    logical_or_expr    go to state 41
+    logical_and_expr   go to state 42
+    relational_expr    go to state 43
+    addsub_expr        go to state 44
+    mult_expr          go to state 45
+    exp_expr           go to state 46
+    unary_expr         go to state 47
+    postfix_expr       go to state 48
+    grouping           go to state 49
+    types              go to state 50
+    lit_int            go to state 51
+    lit_str            go to state 52
+    lit_char           go to state 53
+    ident              go to state 54
+    bool_true          go to state 55
+    bool_false         go to state 56
+    array              go to state 57
+    arrsize            go to state 20
+    arrnosize          go to state 21
+    loop_params_maybe  go to state 165
+
+
+State 145
+
+   95 other_statements: TOKEN_PRINT TOKEN_SEMICOLON .
+
+    $default  reduce using rule 95 (other_statements)
+
+
+State 146
+
+   94 other_statements: TOKEN_PRINT expr_list . TOKEN_SEMICOLON
+  101 expr_list: expr_list . TOKEN_COMMA expression
+
+    TOKEN_SEMICOLON  shift, and go to state 166
+    TOKEN_COMMA      shift, and go to state 102
+
+
+State 147
+
+   97 other_statements: TOKEN_RETURN TOKEN_SEMICOLON .
+
+    $default  reduce using rule 97 (other_statements)
+
+
+State 148
+
+   18 expression: expression . TOKEN_ASSIGN logical_or_expr
+   96 other_statements: TOKEN_RETURN expression . TOKEN_SEMICOLON
+
+    TOKEN_SEMICOLON  shift, and go to state 167
+    TOKEN_ASSIGN     shift, and go to state 73
+
+
+State 149
+
+   18 expression: expression . TOKEN_ASSIGN logical_or_expr
+   99 other_statements: expression . TOKEN_SEMICOLON
+  102 expr_list: expression .
+
+    TOKEN_SEMICOLON  shift, and go to state 151
+    TOKEN_ASSIGN     shift, and go to state 73
+
+    $default  reduce using rule 102 (expr_list)
+
+
+State 150
+
+   98 other_statements: TOKEN_LCURLY statements . TOKEN_RCURLY
+
+    TOKEN_RCURLY  shift, and go to state 168
+
+
+State 151
+
+   99 other_statements: expression TOKEN_SEMICOLON .
+
+    $default  reduce using rule 99 (other_statements)
+
+
+State 152
+
+   77 square_brackets: TOKEN_LBRACKET expression TOKEN_RBRACKET . square_brackets
+   78                | TOKEN_LBRACKET expression TOKEN_RBRACKET .
+
+    TOKEN_LBRACKET  shift, and go to state 91
+
+    $default  reduce using rule 78 (square_brackets)
+
+    square_brackets  go to state 169
+
+
+State 153
+
+   10 declaration: ident TOKEN_COLON . type_specifier TOKEN_SEMICOLON
+   11            | ident TOKEN_COLON . array TOKEN_SEMICOLON
+   12            | ident TOKEN_COLON . type_specifier TOKEN_ASSIGN expression TOKEN_SEMICOLON
+   13            | ident TOKEN_COLON . array TOKEN_ASSIGN TOKEN_LCURLY expr_list TOKEN_RCURLY TOKEN_SEMICOLON
+
+    TOKEN_CHAR     shift, and go to state 11
+    TOKEN_INTEGER  shift, and go to state 12
+    TOKEN_STRING   shift, and go to state 13
+    TOKEN_ARRAY    shift, and go to state 14
+    TOKEN_VOID     shift, and go to state 15
+    TOKEN_BOOLEAN  shift, and go to state 16
+
+    type_specifier  go to state 18
+    array           go to state 19
+    arrsize         go to state 20
+    arrnosize       go to state 21
+
+
+State 154
+
+   79 square_brackets: TOKEN_LBRACKET statements TOKEN_RBRACKET . square_brackets
+   80                | TOKEN_LBRACKET statements TOKEN_RBRACKET .
+
+    TOKEN_LBRACKET  shift, and go to state 91
+
+    $default  reduce using rule 80 (square_brackets)
+
+    square_brackets  go to state 170
+
+
+State 155
+
+   18 expression: expression . TOKEN_ASSIGN logical_or_expr
+   99 other_statements: expression . TOKEN_SEMICOLON
+
+    TOKEN_SEMICOLON  shift, and go to state 151
+    TOKEN_ASSIGN     shift, and go to state 73
+
+
+State 156
+
+   81 statements: open_statement statements .
+
+    $default  reduce using rule 81 (statements)
+
+
+State 157
+
+   82 statements: closed_statement statements .
+
+    $default  reduce using rule 82 (statements)
+
+
+State 158
+
+   13 declaration: ident TOKEN_COLON array TOKEN_ASSIGN TOKEN_LCURLY expr_list TOKEN_RCURLY TOKEN_SEMICOLON .
+
+    $default  reduce using rule 13 (declaration)
+
+
+State 159
+
+    7 functions: ident TOKEN_COLON TOKEN_FUNCTION type_specifier TOKEN_LPAREN TOKEN_RPAREN TOKEN_ASSIGN TOKEN_LCURLY statements . TOKEN_RCURLY
+
+    TOKEN_RCURLY  shift, and go to state 171
+
+
+State 160
+
+    6 functions: ident TOKEN_COLON TOKEN_FUNCTION type_specifier TOKEN_LPAREN parameter_list TOKEN_RPAREN TOKEN_ASSIGN TOKEN_LCURLY . statements TOKEN_RCURLY
+
+    TOKEN_IDENT     shift, and go to state 1
+    TOKEN_ARRAY     shift, and go to state 14
+    TOKEN_FALSE     shift, and go to state 32
+    TOKEN_TRUE      shift, and go to state 33
+    TOKEN_IF        shift, and go to state 122
+    TOKEN_FOR       shift, and go to state 123
+    TOKEN_PRINT     shift, and go to state 124
+    TOKEN_RETURN    shift, and go to state 125
+    TOKEN_LPAREN    shift, and go to state 34
+    TOKEN_LCURLY    shift, and go to state 126
+    TOKEN_NOT       shift, and go to state 36
+    TOKEN_MINUS     shift, and go to state 37
+    TOKEN_LIT_STR   shift, and go to state 38
+    TOKEN_LIT_CHAR  shift, and go to state 39
+    TOKEN_LIT_INT   shift, and go to state 29
+
+    declaration       go to state 127
+    expression        go to state 155
+    logical_or_expr   go to state 41
+    logical_and_expr  go to state 42
+    relational_expr   go to state 43
+    addsub_expr       go to state 44
+    mult_expr         go to state 45
+    exp_expr          go to state 46
+    unary_expr        go to state 47
+    postfix_expr      go to state 48
+    grouping          go to state 49
+    types             go to state 50
+    lit_int           go to state 51
+    lit_str           go to state 52
+    lit_char          go to state 53
+    ident             go to state 129
+    bool_true         go to state 55
+    bool_false        go to state 56
+    array             go to state 57
+    arrsize           go to state 20
+    arrnosize         go to state 21
+    statements        go to state 172
+    open_statement    go to state 131
+    closed_statement  go to state 132
+    other_statements  go to state 133
+
+
+State 161
+
+   14 parameter_list: ident TOKEN_COLON type_specifier TOKEN_COMMA . parameter_list
+
+    TOKEN_IDENT  shift, and go to state 1
+
+    parameter_list  go to state 173
+    ident           go to state 65
+
+
+State 162
+
+   16 parameter_list: ident TOKEN_COLON arrnosize TOKEN_COMMA . parameter_list
+
+    TOKEN_IDENT  shift, and go to state 1
+
+    parameter_list  go to state 174
+    ident           go to state 65
+
+
+State 163
+
+   18 expression: expression . TOKEN_ASSIGN logical_or_expr
+   85 open_statement: TOKEN_IF TOKEN_LPAREN expression . TOKEN_RPAREN open_statement
+   86               | TOKEN_IF TOKEN_LPAREN expression . TOKEN_RPAREN closed_statement
+   87               | TOKEN_IF TOKEN_LPAREN expression . TOKEN_RPAREN closed_statement TOKEN_ELSE open_statement
+   89 closed_statement: TOKEN_IF TOKEN_LPAREN expression . TOKEN_RPAREN closed_statement TOKEN_ELSE closed_statement
+
+    TOKEN_RPAREN  shift, and go to state 175
+    TOKEN_ASSIGN  shift, and go to state 73
+
+
+State 164
+
+   18 expression: expression . TOKEN_ASSIGN logical_or_expr
+   93 loop_params_maybe: expression .
+
+    TOKEN_ASSIGN  shift, and go to state 73
+
+    $default  reduce using rule 93 (loop_params_maybe)
+
+
+State 165
+
+   88 open_statement: TOKEN_FOR TOKEN_LPAREN loop_params_maybe . TOKEN_SEMICOLON loop_params_maybe TOKEN_SEMICOLON loop_params_maybe TOKEN_RPAREN open_statement
+   90 closed_statement: TOKEN_FOR TOKEN_LPAREN loop_params_maybe . TOKEN_SEMICOLON loop_params_maybe TOKEN_SEMICOLON loop_params_maybe TOKEN_RPAREN closed_statement
+
+    TOKEN_SEMICOLON  shift, and go to state 176
+
+
+State 166
+
+   94 other_statements: TOKEN_PRINT expr_list TOKEN_SEMICOLON .
+
+    $default  reduce using rule 94 (other_statements)
+
+
+State 167
+
+   96 other_statements: TOKEN_RETURN expression TOKEN_SEMICOLON .
+
+    $default  reduce using rule 96 (other_statements)
+
+
+State 168
+
+   98 other_statements: TOKEN_LCURLY statements TOKEN_RCURLY .
+
+    $default  reduce using rule 98 (other_statements)
+
+
+State 169
+
+   77 square_brackets: TOKEN_LBRACKET expression TOKEN_RBRACKET square_brackets .
+
+    $default  reduce using rule 77 (square_brackets)
+
+
+State 170
+
+   79 square_brackets: TOKEN_LBRACKET statements TOKEN_RBRACKET square_brackets .
+
+    $default  reduce using rule 79 (square_brackets)
+
+
+State 171
+
+    7 functions: ident TOKEN_COLON TOKEN_FUNCTION type_specifier TOKEN_LPAREN TOKEN_RPAREN TOKEN_ASSIGN TOKEN_LCURLY statements TOKEN_RCURLY .
+
+    $default  reduce using rule 7 (functions)
+
+
+State 172
+
+    6 functions: ident TOKEN_COLON TOKEN_FUNCTION type_specifier TOKEN_LPAREN parameter_list TOKEN_RPAREN TOKEN_ASSIGN TOKEN_LCURLY statements . TOKEN_RCURLY
+
+    TOKEN_RCURLY  shift, and go to state 177
+
+
+State 173
+
+   14 parameter_list: ident TOKEN_COLON type_specifier TOKEN_COMMA parameter_list .
+
+    $default  reduce using rule 14 (parameter_list)
+
+
+State 174
+
+   16 parameter_list: ident TOKEN_COLON arrnosize TOKEN_COMMA parameter_list .
+
+    $default  reduce using rule 16 (parameter_list)
+
+
+State 175
+
+   85 open_statement: TOKEN_IF TOKEN_LPAREN expression TOKEN_RPAREN . open_statement
+   86               | TOKEN_IF TOKEN_LPAREN expression TOKEN_RPAREN . closed_statement
+   87               | TOKEN_IF TOKEN_LPAREN expression TOKEN_RPAREN . closed_statement TOKEN_ELSE open_statement
+   89 closed_statement: TOKEN_IF TOKEN_LPAREN expression TOKEN_RPAREN . closed_statement TOKEN_ELSE closed_statement
+
+    TOKEN_IDENT     shift, and go to state 1
+    TOKEN_ARRAY     shift, and go to state 14
+    TOKEN_FALSE     shift, and go to state 32
+    TOKEN_TRUE      shift, and go to state 33
+    TOKEN_IF        shift, and go to state 122
+    TOKEN_FOR       shift, and go to state 123
+    TOKEN_PRINT     shift, and go to state 124
+    TOKEN_RETURN    shift, and go to state 125
+    TOKEN_LPAREN    shift, and go to state 34
+    TOKEN_LCURLY    shift, and go to state 126
+    TOKEN_NOT       shift, and go to state 36
+    TOKEN_MINUS     shift, and go to state 37
+    TOKEN_LIT_STR   shift, and go to state 38
+    TOKEN_LIT_CHAR  shift, and go to state 39
+    TOKEN_LIT_INT   shift, and go to state 29
+
+    declaration       go to state 127
+    expression        go to state 155
+    logical_or_expr   go to state 41
+    logical_and_expr  go to state 42
+    relational_expr   go to state 43
+    addsub_expr       go to state 44
+    mult_expr         go to state 45
+    exp_expr          go to state 46
+    unary_expr        go to state 47
+    postfix_expr      go to state 48
+    grouping          go to state 49
+    types             go to state 50
+    lit_int           go to state 51
+    lit_str           go to state 52
+    lit_char          go to state 53
+    ident             go to state 129
+    bool_true         go to state 55
+    bool_false        go to state 56
+    array             go to state 57
+    arrsize           go to state 20
+    arrnosize         go to state 21
+    open_statement    go to state 178
+    closed_statement  go to state 179
+    other_statements  go to state 133
+
+
+State 176
+
+   88 open_statement: TOKEN_FOR TOKEN_LPAREN loop_params_maybe TOKEN_SEMICOLON . loop_params_maybe TOKEN_SEMICOLON loop_params_maybe TOKEN_RPAREN open_statement
+   90 closed_statement: TOKEN_FOR TOKEN_LPAREN loop_params_maybe TOKEN_SEMICOLON . loop_params_maybe TOKEN_SEMICOLON loop_params_maybe TOKEN_RPAREN closed_statement
+
+    TOKEN_IDENT     shift, and go to state 1
+    TOKEN_ARRAY     shift, and go to state 14
+    TOKEN_FALSE     shift, and go to state 32
+    TOKEN_TRUE      shift, and go to state 33
+    TOKEN_LPAREN    shift, and go to state 34
+    TOKEN_LCURLY    shift, and go to state 35
+    TOKEN_NOT       shift, and go to state 36
+    TOKEN_MINUS     shift, and go to state 37
+    TOKEN_LIT_STR   shift, and go to state 38
+    TOKEN_LIT_CHAR  shift, and go to state 39
+    TOKEN_LIT_INT   shift, and go to state 29
+
+    $default  reduce using rule 92 (loop_params_maybe)
+
+    expression         go to state 164
+    logical_or_expr    go to state 41
+    logical_and_expr   go to state 42
+    relational_expr    go to state 43
+    addsub_expr        go to state 44
+    mult_expr          go to state 45
+    exp_expr           go to state 46
+    unary_expr         go to state 47
+    postfix_expr       go to state 48
+    grouping           go to state 49
+    types              go to state 50
+    lit_int            go to state 51
+    lit_str            go to state 52
+    lit_char           go to state 53
+    ident              go to state 54
+    bool_true          go to state 55
+    bool_false         go to state 56
+    array              go to state 57
+    arrsize            go to state 20
+    arrnosize          go to state 21
+    loop_params_maybe  go to state 180
+
+
+State 177
+
+    6 functions: ident TOKEN_COLON TOKEN_FUNCTION type_specifier TOKEN_LPAREN parameter_list TOKEN_RPAREN TOKEN_ASSIGN TOKEN_LCURLY statements TOKEN_RCURLY .
+
+    $default  reduce using rule 6 (functions)
+
+
+State 178
+
+   85 open_statement: TOKEN_IF TOKEN_LPAREN expression TOKEN_RPAREN open_statement .
+
+    $default  reduce using rule 85 (open_statement)
+
+
+State 179
+
+   86 open_statement: TOKEN_IF TOKEN_LPAREN expression TOKEN_RPAREN closed_statement .
+   87               | TOKEN_IF TOKEN_LPAREN expression TOKEN_RPAREN closed_statement . TOKEN_ELSE open_statement
+   89 closed_statement: TOKEN_IF TOKEN_LPAREN expression TOKEN_RPAREN closed_statement . TOKEN_ELSE closed_statement
+
+    TOKEN_ELSE  shift, and go to state 181
+
+    $default  reduce using rule 86 (open_statement)
+
+
+State 180
+
+   88 open_statement: TOKEN_FOR TOKEN_LPAREN loop_params_maybe TOKEN_SEMICOLON loop_params_maybe . TOKEN_SEMICOLON loop_params_maybe TOKEN_RPAREN open_statement
+   90 closed_statement: TOKEN_FOR TOKEN_LPAREN loop_params_maybe TOKEN_SEMICOLON loop_params_maybe . TOKEN_SEMICOLON loop_params_maybe TOKEN_RPAREN closed_statement
+
+    TOKEN_SEMICOLON  shift, and go to state 182
+
+
+State 181
+
+   87 open_statement: TOKEN_IF TOKEN_LPAREN expression TOKEN_RPAREN closed_statement TOKEN_ELSE . open_statement
+   89 closed_statement: TOKEN_IF TOKEN_LPAREN expression TOKEN_RPAREN closed_statement TOKEN_ELSE . closed_statement
+
+    TOKEN_IDENT     shift, and go to state 1
+    TOKEN_ARRAY     shift, and go to state 14
+    TOKEN_FALSE     shift, and go to state 32
+    TOKEN_TRUE      shift, and go to state 33
+    TOKEN_IF        shift, and go to state 122
+    TOKEN_FOR       shift, and go to state 123
+    TOKEN_PRINT     shift, and go to state 124
+    TOKEN_RETURN    shift, and go to state 125
+    TOKEN_LPAREN    shift, and go to state 34
+    TOKEN_LCURLY    shift, and go to state 126
+    TOKEN_NOT       shift, and go to state 36
+    TOKEN_MINUS     shift, and go to state 37
+    TOKEN_LIT_STR   shift, and go to state 38
+    TOKEN_LIT_CHAR  shift, and go to state 39
+    TOKEN_LIT_INT   shift, and go to state 29
+
+    declaration       go to state 127
+    expression        go to state 155
+    logical_or_expr   go to state 41
+    logical_and_expr  go to state 42
+    relational_expr   go to state 43
+    addsub_expr       go to state 44
+    mult_expr         go to state 45
+    exp_expr          go to state 46
+    unary_expr        go to state 47
+    postfix_expr      go to state 48
+    grouping          go to state 49
+    types             go to state 50
+    lit_int           go to state 51
+    lit_str           go to state 52
+    lit_char          go to state 53
+    ident             go to state 129
+    bool_true         go to state 55
+    bool_false        go to state 56
+    array             go to state 57
+    arrsize           go to state 20
+    arrnosize         go to state 21
+    open_statement    go to state 183
+    closed_statement  go to state 184
+    other_statements  go to state 133
+
+
+State 182
+
+   88 open_statement: TOKEN_FOR TOKEN_LPAREN loop_params_maybe TOKEN_SEMICOLON loop_params_maybe TOKEN_SEMICOLON . loop_params_maybe TOKEN_RPAREN open_statement
+   90 closed_statement: TOKEN_FOR TOKEN_LPAREN loop_params_maybe TOKEN_SEMICOLON loop_params_maybe TOKEN_SEMICOLON . loop_params_maybe TOKEN_RPAREN closed_statement
+
+    TOKEN_IDENT     shift, and go to state 1
+    TOKEN_ARRAY     shift, and go to state 14
+    TOKEN_FALSE     shift, and go to state 32
+    TOKEN_TRUE      shift, and go to state 33
+    TOKEN_LPAREN    shift, and go to state 34
+    TOKEN_LCURLY    shift, and go to state 35
+    TOKEN_NOT       shift, and go to state 36
+    TOKEN_MINUS     shift, and go to state 37
+    TOKEN_LIT_STR   shift, and go to state 38
+    TOKEN_LIT_CHAR  shift, and go to state 39
+    TOKEN_LIT_INT   shift, and go to state 29
+
+    $default  reduce using rule 92 (loop_params_maybe)
+
+    expression         go to state 164
+    logical_or_expr    go to state 41
+    logical_and_expr   go to state 42
+    relational_expr    go to state 43
+    addsub_expr        go to state 44
+    mult_expr          go to state 45
+    exp_expr           go to state 46
+    unary_expr         go to state 47
+    postfix_expr       go to state 48
+    grouping           go to state 49
+    types              go to state 50
+    lit_int            go to state 51
+    lit_str            go to state 52
+    lit_char           go to state 53
+    ident              go to state 54
+    bool_true          go to state 55
+    bool_false         go to state 56
+    array              go to state 57
+    arrsize            go to state 20
+    arrnosize          go to state 21
+    loop_params_maybe  go to state 185
+
+
+State 183
+
+   87 open_statement: TOKEN_IF TOKEN_LPAREN expression TOKEN_RPAREN closed_statement TOKEN_ELSE open_statement .
+
+    $default  reduce using rule 87 (open_statement)
+
+
+State 184
+
+   89 closed_statement: TOKEN_IF TOKEN_LPAREN expression TOKEN_RPAREN closed_statement TOKEN_ELSE closed_statement .
+
+    $default  reduce using rule 89 (closed_statement)
+
+
+State 185
+
+   88 open_statement: TOKEN_FOR TOKEN_LPAREN loop_params_maybe TOKEN_SEMICOLON loop_params_maybe TOKEN_SEMICOLON loop_params_maybe . TOKEN_RPAREN open_statement
+   90 closed_statement: TOKEN_FOR TOKEN_LPAREN loop_params_maybe TOKEN_SEMICOLON loop_params_maybe TOKEN_SEMICOLON loop_params_maybe . TOKEN_RPAREN closed_statement
+
+    TOKEN_RPAREN  shift, and go to state 186
+
+
+State 186
+
+   88 open_statement: TOKEN_FOR TOKEN_LPAREN loop_params_maybe TOKEN_SEMICOLON loop_params_maybe TOKEN_SEMICOLON loop_params_maybe TOKEN_RPAREN . open_statement
+   90 closed_statement: TOKEN_FOR TOKEN_LPAREN loop_params_maybe TOKEN_SEMICOLON loop_params_maybe TOKEN_SEMICOLON loop_params_maybe TOKEN_RPAREN . closed_statement
+
+    TOKEN_IDENT     shift, and go to state 1
+    TOKEN_ARRAY     shift, and go to state 14
+    TOKEN_FALSE     shift, and go to state 32
+    TOKEN_TRUE      shift, and go to state 33
+    TOKEN_IF        shift, and go to state 122
+    TOKEN_FOR       shift, and go to state 123
+    TOKEN_PRINT     shift, and go to state 124
+    TOKEN_RETURN    shift, and go to state 125
+    TOKEN_LPAREN    shift, and go to state 34
+    TOKEN_LCURLY    shift, and go to state 126
+    TOKEN_NOT       shift, and go to state 36
+    TOKEN_MINUS     shift, and go to state 37
+    TOKEN_LIT_STR   shift, and go to state 38
+    TOKEN_LIT_CHAR  shift, and go to state 39
+    TOKEN_LIT_INT   shift, and go to state 29
+
+    declaration       go to state 127
+    expression        go to state 155
+    logical_or_expr   go to state 41
+    logical_and_expr  go to state 42
+    relational_expr   go to state 43
+    addsub_expr       go to state 44
+    mult_expr         go to state 45
+    exp_expr          go to state 46
+    unary_expr        go to state 47
+    postfix_expr      go to state 48
+    grouping          go to state 49
+    types             go to state 50
+    lit_int           go to state 51
+    lit_str           go to state 52
+    lit_char          go to state 53
+    ident             go to state 129
+    bool_true         go to state 55
+    bool_false        go to state 56
+    array             go to state 57
+    arrsize           go to state 20
+    arrnosize         go to state 21
+    open_statement    go to state 187
+    closed_statement  go to state 188
+    other_statements  go to state 133
+
+
+State 187
+
+   88 open_statement: TOKEN_FOR TOKEN_LPAREN loop_params_maybe TOKEN_SEMICOLON loop_params_maybe TOKEN_SEMICOLON loop_params_maybe TOKEN_RPAREN open_statement .
+
+    $default  reduce using rule 88 (open_statement)
+
+
+State 188
+
+   90 closed_statement: TOKEN_FOR TOKEN_LPAREN loop_params_maybe TOKEN_SEMICOLON loop_params_maybe TOKEN_SEMICOLON loop_params_maybe TOKEN_RPAREN closed_statement .
+
+    $default  reduce using rule 90 (closed_statement)
