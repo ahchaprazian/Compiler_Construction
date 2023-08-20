@@ -1,3 +1,9 @@
+## Plagiarism Disclaimer
+
+This repository and its contents are for educational and informational purposes. You are encouraged to use the code and concepts presented here as a learning resource. However, if you reuse or replicate any code, ideas, or content from this repository in your projects, please ensure that you provide proper attribution by referencing this repository. Plagiarism, which includes the use of someone else's work without proper acknowledgment, is against academic and ethical standards.
+
+By accessing and using the content within this repository, you agree to adhere to these guidelines and to use the material responsibly.
+
 # BMinor Compiler Construction
 Semester project implementing different parts of a compiler to work with the BMinor language.
 
