@@ -1,10 +1,4 @@
-## Plagiarism Disclaimer
-
-This repository and its contents are for educational and informational purposes. You are encouraged to use the code and concepts presented here as a learning resource. However, if you reuse or replicate any code, ideas, or content from this repository in your projects, please ensure that you provide proper attribution by referencing this repository. Plagiarism, which includes the use of someone else's work without proper acknowledgment, is against academic and ethical standards.
-
-By accessing and using the content within this repository, you agree to adhere to these guidelines and to use the material responsibly.
-
-# BMinor Compiler Construction
+## BMinor Compiler Construction
 Semester project implementing different parts of a compiler to work with the BMinor language.
 
 This repository contains the Bminor compiler project followed the examples and textbook by [Douglas Thain](https://github.com/dthain/compilerbook-examples)
@@ -12,17 +6,49 @@ The following project completed the scanner, parser, pretty printer, and type ch
 still needs bugs to be cleaned for the type checker, but aside from that, all other aspects are fully functional.
 
 # Learning Objectives 
-Implementing the scanner in the compiler project taught us about lexical analysis and the importance of designing an efficient tokenizer that recognizes tokens based on regular expressions. We learned to handle complex token patterns, such as regular expressions for identifiers, numbers, and strings, and handle comments and whitespace properly.
 
-The parser implementation exposed us to formal grammars and parsing techniques like Recursive Descent or LALR(1). We had to construct a robust syntax tree that accurately represented the language's grammar, enabling further semantic analysis and code generation stages. Dealing with ambiguous grammar rules required careful consideration to ensure correct parsing behavior.
+**Lexical Analysis (Scanner):**
+- Implemented the scanner in the compiler project.
+- Learned about lexical analysis and efficient tokenizer design.
+- Recognized tokens using regular expressions.
+-  Managed complex token patterns (identifiers, numbers, strings).
+- Handled comments and whitespace appropriately.
 
-The pretty printer module provided us with insights into representing the syntax tree in a readable and formatted manner, making debugging and understanding the compiler's intermediate stages much more manageable. It involved traversing the syntax tree effectively and generating well-structured code that maintains the original program's indentation and layout.
+**Parsing (Parser):**
+- Implemented the parser in the compiler project.
+- Gained insights into formal grammars and parsing techniques.
+- Constructed a robust syntax tree representing the language's grammar.
+- Dealt with ambiguous grammar rules carefully for correct parsing.
 
-The type checker phase was critical in ensuring the language's type safety. We learned about type inference algorithms and the complexities of handling polymorphic types and type compatibility. Additionally, we understood the importance of detecting type errors early in the compilation process, allowing developers to fix issues before executing the program.
+**Pretty Printing:**
+- Developed a pretty printer module for the syntax tree.
+- Improved readability and formatting of the syntax tree.
+- Facilitated debugging and understanding of intermediate compiler stages.
+- Ensured the generated code maintains original program layout.
 
-Throughout these implementations, we faced error handling, memory management, and shift reduction challenges. Handling ambiguous grammar and improving parser efficiency required us to fine-tune the grammar and consider lookahead strategies. Moreover, managing the symbol table and scope resolution for the type checker demanded attention to detail to ensure accurate type validation.
+**Type Checking:**
+- Implemented a type checker phase to ensure type safety.
+- Learned about type inference algorithms.
+- Managed polymorphic types and type compatibility.
+- Detected type errors early in the compilation process.
 
-By completing these modules, we comprehensively understood the different phases involved in a compiler construction project, from lexical analysis and parsing to semantic analysis and type checking. It also deepened our knowledge of programming language theory and the complexities of building a reliable and efficient compiler for a specific language.
+**Challenges Faced:**
+- Addressed error handling and memory management challenges.
+- Optimized parser efficiency and grammar handling.
+- Managed symbol table and scope resolution for type checking.
+- Ensured accurate type validation in the symbol table.
+
+**Overall Learning:**
+- Comprehensively understood compiler construction phases.
+- Gained knowledge of programming language theory.
+- Developed skills in building a reliable and efficient compiler for a specific language.
+- Implementing the scanner in the compiler project taught us about lexical analysis and the importance of designing an efficient tokenizer that recognizes tokens based on regular expressions. We learned to handle complex token patterns, such as regular expressions for identifiers, numbers, and strings, and handle comments and whitespace properly.
+
+## Plagiarism Disclaimer
+
+This repository and its contents are for educational and informational purposes. You are encouraged to use the code and concepts presented here as a learning resource. However, if you reuse or replicate any code, ideas, or content from this repository in your projects, please ensure that you provide proper attribution by referencing this repository. Plagiarism, which includes the use of someone else's work without proper acknowledgment, is against academic and ethical standards.
+
+By accessing and using the content within this repository, you agree to adhere to these guidelines and to use the material responsibly.
 
 # Collabroators
 [Zach Le](https://github.com/ezachle)
